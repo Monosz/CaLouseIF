@@ -6,15 +6,14 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /*
-CREATE TABLE users (
-    user_id INT PRIMARY KEY AUTO_INCREMENT,
-    user_name VARCHAR(50) UNIQUE NOT NULL,
-    user_password VARCHAR(50) NOT NULL,
-    user_phone VARCHAR(15) NOT NULL,
-    user_address VARCHAR(255) NOT NULL,
-    user_role VARCHAR(10) NOT NULL
-)
- */
+ 
+CREATE DATABASE calouseif;
+USE calouseif;
+
+DROP DATABASE calouseif
+
+*/
+
 public class Database {
 	private final String USERNAME = "root",
 			PASSWORD = "",

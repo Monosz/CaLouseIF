@@ -22,7 +22,7 @@ public class RegisterView extends BorderPane {
 	private Label nameLabel, passwordLabel, phoneLabel, addressLabel, roleLabel;
 	private TextField nameTextField, phoneTextField, addressTextField;
 	private PasswordField passwordField;
-	private RadioButton sellerRadioButton;
+	private RadioButton buyerRadioButton, sellerRadioButton;
 	private ToggleGroup roleToggleGroup;
 	private Button registerButton;
 	private Label loginRedirectLabel, errorLabel;
@@ -43,8 +43,10 @@ public class RegisterView extends BorderPane {
 		
 		passwordField = new PasswordField();
 		
+		buyerRadioButton = new RadioButton("Buyer");
 		sellerRadioButton = new RadioButton("Seller");
 		roleToggleGroup = new ToggleGroup();
+		buyerRadioButton.setToggleGroup(roleToggleGroup);
 		sellerRadioButton.setToggleGroup(roleToggleGroup);
 		
 		registerButton = new Button("Register");
@@ -66,7 +68,7 @@ public class RegisterView extends BorderPane {
 		gp.add(addressTextField, 1, 3);
 		
 		gp.add(roleLabel, 0, 4);
-		fp.getChildren().addAll(sellerRadioButton);
+		fp.getChildren().addAll(buyerRadioButton, sellerRadioButton);
 		gp.add(fp, 1, 4);
 		
 		gp.add(registerButton, 0, 5);
@@ -78,7 +80,6 @@ public class RegisterView extends BorderPane {
 	
 	private void setEvents() {
 		registerButton.setOnAction(e -> {
-//			RadioButton selectedRadioButton = 
 			String name = nameTextField.getText(),
 					password = passwordField.getText(),
 					phone = phoneTextField.getText(),
