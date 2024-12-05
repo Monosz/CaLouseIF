@@ -70,7 +70,9 @@ public class User {
 	}
 	
 	public static User login(String name, String password) {
-		// TODO: Handle admin login
+		if (name.equals("admin") && password.equals("admin")) {
+			return new User(0, "admin", "admin", null, null, null);
+		}
 		
 		String query = "SELECT * FROM users "
 					 + "WHERE user_name = ? "

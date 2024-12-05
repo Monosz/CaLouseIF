@@ -9,6 +9,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import model.User;
 
 public class LoginView extends BorderPane {
 	private Stage stage;
@@ -52,13 +53,14 @@ public class LoginView extends BorderPane {
 	private void setEvents() {
 		loginButton.setOnAction(e -> {
 			String name = nameTextField.getText(),
-					password = passwordField.getText(),
-					message = UserController.login(name, password);
+					password = passwordField.getText();
+			User user = UserController.login(name, password);
 			
-			if (message.equals("User found")) {
+			if (user != null) {
+				stage.setUserData(user);
 				new HomeView(stage);				
 			} else {
-				errorLabel.setText(message);
+				errorLabel.setText("Invalid login details.");
 			}
 		});
 		
@@ -73,7 +75,6 @@ public class LoginView extends BorderPane {
 		
 		Scene scene = new Scene(this, 400, 300);
 		stage.setScene(scene);
-		stage.setTitle("CaLouseIF/Login");
 		stage.show();
 	}
 

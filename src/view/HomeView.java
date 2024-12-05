@@ -1,19 +1,34 @@
 package view;
 
 import javafx.scene.Scene;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import model.User;
 
-public class HomeView extends GridPane {
+public class HomeView extends BorderPane {
 	private Stage stage;
+	private User user;
 	
+	private void init() {
+	}
+	
+	private void setLayout() {
+		
+	}
+	
+	private void setEvents() {
+		
+	}
 	
 	public HomeView(Stage stage) {
 		this.stage = stage;
+		this.user = (User) stage.getUserData();
 		
-		Scene scene = new Scene(this, 400, 300);
+		init(); setLayout(); setEvents();
+		
+		Scene scene = new Scene(this);
+	
 		stage.setScene(scene);
-		stage.setTitle("CaLouseIF/Home");
 		stage.show();
 	}
 	

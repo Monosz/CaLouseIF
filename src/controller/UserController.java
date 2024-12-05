@@ -12,8 +12,8 @@ public class UserController {
 		return (res == 0) ? "Register failed" : "Register success";
 	}
 	
-	public static String login(String name, String password) {
-		return User.login(name, password) == null ? "User not found" : "User found";
+	public static User login(String name, String password) {
+		return User.login(name, password);
 	}
 	
 }

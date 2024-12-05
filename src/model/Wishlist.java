@@ -38,22 +38,25 @@ public class Wishlist {
 	// =                     LOGIC                      =
 	// ==================================================
 
-	public static List<Wishlist> viewWishlist(int userId) {
-		String query = "SELECT * FROM wishlists "
+	public static List<Item> viewWishlist(int userId) {
+		String query = "SELECT i.id, i.name, i.size, i.price, i.category "
+					 + "FROM wishlists w JOIN items i ON w.item_id = i.item_id "
 					 + "WHERE user_id = ?";
 		PreparedStatement ps = db.prepareStatement(query);
 		
-		List<Wishlist> list = new ArrayList<>();
+		List<Item> list = new ArrayList<>();
 		try {
 			ps.setInt(1, userId);
 			ResultSet rs = ps.executeQuery();
 			
 			while (rs.next()) {
-				int wId = rs.getInt("wishlist_id"),
-						uId = rs.getInt("user_id"),
-						iId = rs.getInt("item_id");
+				int iId = rs.getInt("item_id"),
+						iPrice = rs.getInt("item_price");
+				String iName = rs.getString("item_name"),
+						iSize = rs.getString("item_size"),
+						iCategory = rs.getString("item_category");
 				
-				list.add(new Wishlist(wId, uId, iId));
+				list.add(new Item(iId, iName, iSize, iPrice, iCategory));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

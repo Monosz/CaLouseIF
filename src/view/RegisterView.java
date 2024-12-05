@@ -80,10 +80,10 @@ public class RegisterView extends BorderPane {
 	
 	private void setEvents() {
 		registerButton.setOnAction(e -> {
-			String name = nameTextField.getText(),
-					password = passwordField.getText(),
-					phone = phoneTextField.getText(),
-					address = addressTextField.getText(),
+			String name = nameTextField.getText().strip(),
+					password = passwordField.getText().strip(),
+					phone = phoneTextField.getText().strip(),
+					address = addressTextField.getText().strip(),
 					role = ((Labeled) roleToggleGroup.getSelectedToggle()).getText(),
 					message = UserController.register(name, password, phone, address, role);
 			if (message.equals("Register success")) {
@@ -104,7 +104,6 @@ public class RegisterView extends BorderPane {
 		
 		Scene scene = new Scene(this, 400, 300);
 		stage.setScene(scene);
-		stage.setTitle("CaLouseIF/Register");
 		stage.show();
 	}
 
