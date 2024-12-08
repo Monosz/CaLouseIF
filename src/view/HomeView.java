@@ -45,14 +45,19 @@ public class HomeView extends BorderPane {
 
 		scroll = new ScrollPane();
 		itemTV = new TableView<>();
+		
 		nameColumn = new TableColumn<>("Name");
 		nameColumn.setCellValueFactory(new PropertyValueFactory<>("Name"));
+		
 		categoryColumn = new TableColumn<>("Category");
 		categoryColumn.setCellValueFactory(new PropertyValueFactory<>("Category"));
+		
 		sizeColumn = new TableColumn<>("Size");
 		sizeColumn.setCellValueFactory(new PropertyValueFactory<>("Size"));
+		
 		priceColumn = new TableColumn<>("Price");
 		priceColumn.setCellValueFactory(new PropertyValueFactory<>("Price"));
+		
 		itemTV.getColumns().add(nameColumn);
 		itemTV.getColumns().add(categoryColumn);
 		itemTV.getColumns().add(sizeColumn);

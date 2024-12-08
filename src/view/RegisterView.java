@@ -72,7 +72,7 @@ public class RegisterView extends BorderPane {
 		gp.add(fp, 1, 4, 2, 1);
 		
 		gp.add(registerButton, 0, 5);
-		gp.add(errorLabel, 1, 5);
+		gp.add(errorLabel, 1, 5, 3, 1);
 		
 		gp.add(loginRedirectLabel, 0, 6);
 		this.setCenter(gp);

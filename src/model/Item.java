@@ -156,7 +156,7 @@ public class Item {
 
 			while (rs.next()) {
 				int iId = rs.getInt("item_id"), iPrice = rs.getInt("item_price"),
-						iOfferStatus = rs.getInt("item_offer_status"), iWishlist = rs.getInt("item_wishlist");
+						iOfferStatus = rs.getInt("item_offer_status"), iWishlist = 1;
 				String iName = rs.getString("item_name"), iSize = rs.getString("item_size"),
 						iCategory = rs.getString("item_category"), iStatus = rs.getString("item_status");
 
