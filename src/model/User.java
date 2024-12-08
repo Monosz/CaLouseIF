@@ -46,6 +46,12 @@ public class User {
 	// ==================================================
 
 	public static int register(String name, String password, String phone, String address, String role) {
+		int validation = checkAccountValidation(name, password, phone, address);
+		
+		if(validation<0) {
+			return validation;
+		}
+		
 		String query = "INSERT INTO users(user_name, user_password, user_phone, user_address, user_role) "
 					 + "VALUES(?, ?, ?, ?, ?)";
 		PreparedStatement ps = db.prepareStatement(query);
@@ -67,6 +73,30 @@ public class User {
 		}
 		
 		return res;
+	}
+	
+	private static int checkAccountValidation(String name, String password, String phone, String address) {
+//		name validation (must be unique)
+		if (!isUsernameUnique(name)) {
+			return -1;
+		}
+		
+		return 1;
+	}
+	
+	private static boolean isUsernameUnique(String name) {
+		String query = "SELECT * FROM users WHERE user_name = ?";
+		PreparedStatement ps = db.prepareStatement(query);
+		try {
+			ps.setString(1, name);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				return false;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return true; 
 	}
 	
 	public static User login(String name, String password) {
@@ -103,18 +133,6 @@ public class User {
 		return user;
 	}
 	
-	public static boolean checkAccountValidation(String name, String password, String phone, String address) {
-		if (name.isEmpty() || name.length() < 3) { // TODO: Validate unique username
-			return false;
-		} else if (password.isEmpty() || password.length() < 8) { // TODO: Validate password contain special char
-			return false;
-		} else if (!phone.startsWith("+62") || phone.substring(3).length() == 9) {
-			return false;
-		} else if (address.isEmpty()) {
-			return false;
-		}
-		return true;
-	}
 	
 	// ==================================================
 	// =                 GETTER-SETTER                  =

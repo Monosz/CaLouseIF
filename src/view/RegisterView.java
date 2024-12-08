@@ -35,7 +35,7 @@ public class RegisterView extends BorderPane {
 		passwordLabel = new Label("Password:");
 		phoneLabel = new Label("Phone Number:");
 		addressLabel = new Label("Address:");
-		roleLabel = new Label("Role");
+		roleLabel = new Label("Role:");
 		
 		nameTextField = new TextField();
 		phoneTextField = new TextField();
@@ -69,12 +69,12 @@ public class RegisterView extends BorderPane {
 		
 		gp.add(roleLabel, 0, 4);
 		fp.getChildren().addAll(buyerRadioButton, sellerRadioButton);
-		gp.add(fp, 1, 4);
+		gp.add(fp, 1, 4, 2, 1);
 		
 		gp.add(registerButton, 0, 5);
 		gp.add(errorLabel, 1, 5);
-		gp.add(loginRedirectLabel, 0, 6);
 		
+		gp.add(loginRedirectLabel, 0, 6);
 		this.setCenter(gp);
 	}
 	
@@ -84,7 +84,7 @@ public class RegisterView extends BorderPane {
 					password = passwordField.getText().strip(),
 					phone = phoneTextField.getText().strip(),
 					address = addressTextField.getText().strip(),
-					role = ((Labeled) roleToggleGroup.getSelectedToggle()).getText(),
+					role = (roleToggleGroup.getSelectedToggle() != null) ? ((Labeled) roleToggleGroup.getSelectedToggle()).getText() : "",
 					message = UserController.register(name, password, phone, address, role);
 			if (message.equals("Register success")) {
 				new LoginView(stage);				

@@ -57,8 +57,8 @@ public class LoginView extends BorderPane {
 			User user = UserController.login(name, password);
 			
 			if (user != null) {
-				stage.setUserData(user);
-				new HomeView(stage);				
+				stage.setUserData(user); // bisa di apus kali yak
+				new HomeView(stage, user);				
 			} else {
 				errorLabel.setText("Invalid login details.");
 			}

@@ -20,12 +20,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage stage) throws Exception {
 		stage.setTitle("CaLouseIF");
-		
-//		new RegisterView(stage);
 		new LoginView(stage);
-		
-//		stage.setUserData(new User(0, "admin", "admin", null, null, null));
-//		new HomeView(stage);
 	}
 
 }
