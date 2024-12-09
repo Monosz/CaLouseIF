@@ -23,7 +23,7 @@ CREATE TABLE items (
 
 DROP TABLE items;
 
-*/
+ */
 
 // TODO: Verify item model requirement @lab_assistant
 
@@ -35,7 +35,7 @@ public class Item {
 	private int price;
 	private String category, status;
 	private int wishlist, offerStatus;
-	
+
 	public Item(int id, String name, String size, int price, String category) {
 		this.id = id;
 		this.name = name;
@@ -193,10 +193,9 @@ public class Item {
 
 			while (rs.next()) {
 				int iId = rs.getInt("item_id"), iPrice = rs.getInt("item_price"),
-						iOfferStatus = rs.getInt("item_offer_status"), iWishlist = rs.getInt("item_wishlist");
+						iOfferStatus = rs.getInt("item_offer_status"), iWishlist = 0;
 				String iName = rs.getString("item_name"), iSize = rs.getString("item_size"),
 						iCategory = rs.getString("item_category"), iStatus = rs.getString("item_status");
-
 				list.add(new Item(iId, iName, iSize, iPrice, iCategory, iStatus, iWishlist, iOfferStatus));
 			}
 
@@ -282,6 +281,34 @@ public class Item {
 
 	public static void viewOfferItem(int userId) {
 		// TODO;
+	}
+
+	// ===========================================================================
+	// = ADDITIONAL METHODS (not in class diagram, but in sequence diagram(s)=
+	// ===========================================================================
+	// (getItem(by Id) method, found in view wishlist sequence diagram, also needed in view history)
+	public static Item getItem(int id) { 
+		String query = "SELECT * FROM items WHERE item_id = ?";
+		PreparedStatement ps = db.prepareStatement(query);
+
+		Item item = null;
+		try {
+			ps.setInt(1, id);
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				int iId = rs.getInt("item_id"), iPrice = rs.getInt("item_price"),
+						iOfferStatus = rs.getInt("item_offer_status"), iWishlist = rs.getInt("item_wishlist");
+				String iName = rs.getString("item_name"), iSize = rs.getString("item_size"),
+						iCategory = rs.getString("item_category"), iStatus = rs.getString("item_status");
+
+				item = new Item(iId, iName, iSize, iPrice, iCategory, iStatus, iWishlist, iOfferStatus);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return item;
 	}
 
 	// ==================================================

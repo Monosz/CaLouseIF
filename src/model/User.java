@@ -101,7 +101,7 @@ public class User {
 	
 	public static User login(String name, String password) {
 		if (name.equals("admin") && password.equals("admin")) {
-			return new User(0, "admin", "admin", null, null, null);
+			return new User(0, "admin", "admin", null, null, "Admin");
 		}
 		
 		String query = "SELECT * FROM users "
