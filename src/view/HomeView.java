@@ -23,7 +23,7 @@ public class HomeView extends BorderPane {
 	private Stage stage;
 	private User user;
 
-	private GridPane viewLeftGP;
+	private GridPane viewGP;
 
 	private ScrollPane scroll;
 
@@ -155,7 +155,7 @@ public class HomeView extends BorderPane {
 
 
 	private void init() {
-		viewLeftGP = new GridPane();
+		viewGP = new GridPane();
 
 		viewItemsButton = new Button("View items");
 		viewWishlistButton = new Button("View wishlist");
@@ -169,42 +169,42 @@ public class HomeView extends BorderPane {
 		viewItems();
 	}
 
-	private void setLeftGPBuyer() {
-		viewLeftGP = new GridPane();
-		viewLeftGP.add(viewWishlistButton, 0, 0);
-		viewLeftGP.add(viewHistoryButton, 0, 1);
+	private void setGPBuyer() {
+		viewGP = new GridPane();
+		viewGP.add(viewWishlistButton, 0, 0);
+		viewGP.add(viewHistoryButton, 0, 1);
 	}
 
-	private void setLeftGPSeller() {
-		viewLeftGP = new GridPane();
-		viewLeftGP.add(viewOfferItemButton, 0, 0);
+	private void setGPSeller() {
+		viewGP = new GridPane();
+		viewGP.add(viewOfferItemButton, 0, 0);
 	}
 
-	private void setLeftGPAdmin() {
-		viewLeftGP = new GridPane();
-		viewLeftGP.add(viewRequestedItemButton, 0, 0);
+	private void setGPAdmin() {
+		viewGP = new GridPane();
+		viewGP.add(viewRequestedItemButton, 0, 0);
 	}
 
-	private void setLeftGPAll() {
-		viewLeftGP = new GridPane();
-		viewLeftGP.add(viewItemsButton, 0, 0);
+	private void setGPAll() {
+		viewGP = new GridPane();
+		viewGP.add(viewItemsButton, 0, 0);
 	}
 
-	private void setLeftGPInitial() {
+	private void setGPInitial() {
 		if(user.getRole().equals("Admin")) {
-			setLeftGPAdmin();
+			setGPAdmin();
 		} else if (user.getRole().equals("Seller")) {
-			setLeftGPSeller();
+			setGPSeller();
 		} else if (user.getRole().equals("Buyer")){
-			setLeftGPBuyer();
+			setGPBuyer();
 		} else {
 			System.out.println("Unrecognized user role.");
 		}
 	}
 
 	private void setLayout() {
-		setLeftGPInitial();
-		this.setLeft(viewLeftGP);
+		setGPInitial();
+		this.setLeft(viewGP);
 
 		this.setRight(scroll);
 		scroll.setContent(itemTV);
@@ -214,8 +214,8 @@ public class HomeView extends BorderPane {
 	private void setEvents() {
 		viewWishlistButton.setOnAction(e -> {
 			// set left grid pane
-			setLeftGPAll();
-			this.setLeft(viewLeftGP);
+			setGPAll();
+			this.setLeft(viewGP);
 
 			// set right table
 			initTable();
@@ -225,8 +225,8 @@ public class HomeView extends BorderPane {
 
 		viewHistoryButton.setOnAction(e -> {
 			System.out.println("bruh"); 
-			setLeftGPAll();
-			this.setLeft(viewLeftGP);
+			setGPAll();
+			this.setLeft(viewGP);
 
 			// initHistoryTable();
 			// viewHistory();
@@ -235,8 +235,8 @@ public class HomeView extends BorderPane {
 
 		viewOfferItemButton.setOnAction(e -> {
 			System.out.println("bruh 2");
-			setLeftGPAll();
-			this.setLeft(viewLeftGP);
+			setGPAll();
+			this.setLeft(viewGP);
 
 			// initOfferItemTable();
 			// viewOfferItem();
@@ -244,8 +244,8 @@ public class HomeView extends BorderPane {
 		});
 
 		viewRequestedItemButton.setOnAction(e -> {
-			setLeftGPAll();
-			this.setLeft(viewLeftGP);
+			setGPAll();
+			this.setLeft(viewGP);
 
 			initTable();
 			viewRequestedItem();
@@ -253,8 +253,8 @@ public class HomeView extends BorderPane {
 		});
 
 		viewItemsButton.setOnAction(e -> {
-			setLeftGPInitial();
-			this.setLeft(viewLeftGP);
+			setGPInitial();
+			this.setLeft(viewGP);
 
 			initTable();
 			viewItems();
