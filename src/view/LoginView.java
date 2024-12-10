@@ -34,6 +34,7 @@ public class LoginView extends BorderPane {
 		loginButton = new Button("Login");
 		registerRedirectLabel = new Label("Don't have an account? Register");
 		errorLabel = new Label();
+		errorLabel.setWrapText(true);
 	}
 	
 	private void setLayout() {
@@ -57,8 +58,8 @@ public class LoginView extends BorderPane {
 			User user = UserController.login(name, password);
 			
 			if (user != null) {
-				stage.setUserData(user); // bisa di apus kali yak
-				new HomeView(stage, user);				
+				stage.setUserData(user);
+				new HomeView(stage);				
 			} else {
 				errorLabel.setText("Invalid login details.");
 			}
