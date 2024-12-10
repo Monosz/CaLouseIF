@@ -263,9 +263,9 @@ public class HomeView extends BorderPane {
 	}
 
 
-	public HomeView(Stage stage, User user) {
+	public HomeView(Stage stage) {
 		this.stage = stage;
-		this.user = user;
+		this.user = (User) stage.getUserData();
 
 		init(); setLayout(); setEvents();
 
