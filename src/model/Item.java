@@ -11,14 +11,14 @@ import database.Database;
 /*
 
 CREATE TABLE items (
-	item_id 			INT 			PRIMARY KEY	AUTO_INCREMENT,
-	item_name 			VARCHAR(255)	NOT NULL,
-	item_size 			VARCHAR(255) 	NOT NULL,
-	item_price 			INT 			NOT NULL,
+	item_id 		INT PRIMARY KEY	AUTO_INCREMENT,
+	item_name		VARCHAR(255)	NOT NULL,
+	item_size 		VARCHAR(255) 	NOT NULL,
+	item_price 		INT 	NOT NULL,
 	item_category 		VARCHAR(255) 	NOT NULL,
 	item_status 		VARCHAR(10) 	NOT NULL,
-	item_wishlist 		VARCHAR(10) 	NOT NULL,
-	item_offer_status	INT			 	NOT NULL
+	item_wishlist 		INT 	NOT NULL,
+	item_offer_status	INT	NOT NULL
 );
 
 DROP TABLE items;
@@ -156,7 +156,7 @@ public class Item {
 
 			while (rs.next()) {
 				int iId = rs.getInt("item_id"), iPrice = rs.getInt("item_price"),
-						iOfferStatus = rs.getInt("item_offer_status"), iWishlist = 1;
+						iOfferStatus = rs.getInt("item_offer_status"), iWishlist = rs.getInt("item_wishlist");
 				String iName = rs.getString("item_name"), iSize = rs.getString("item_size"),
 						iCategory = rs.getString("item_category"), iStatus = rs.getString("item_status");
 
@@ -193,7 +193,7 @@ public class Item {
 
 			while (rs.next()) {
 				int iId = rs.getInt("item_id"), iPrice = rs.getInt("item_price"),
-						iOfferStatus = rs.getInt("item_offer_status"), iWishlist = 0;
+						iOfferStatus = rs.getInt("item_offer_status"), iWishlist = rs.getInt("item_wishlist");
 				String iName = rs.getString("item_name"), iSize = rs.getString("item_size"),
 						iCategory = rs.getString("item_category"), iStatus = rs.getString("item_status");
 				list.add(new Item(iId, iName, iSize, iPrice, iCategory, iStatus, iWishlist, iOfferStatus));
