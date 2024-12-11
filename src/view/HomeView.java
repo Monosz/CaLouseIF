@@ -28,6 +28,7 @@ public class HomeView extends BorderPane {
 	private ScrollPane scroll;
 
 	private TableView<Item> itemTV;	
+	private TableColumn<Item, Integer> idColumn;
 	private TableColumn<Item, String> nameColumn;
 	private TableColumn<Item, String> categoryColumn;
 	private TableColumn<Item, String> sizeColumn;
@@ -44,6 +45,7 @@ public class HomeView extends BorderPane {
 	// initial table (default: view items, also for: wish list, requested item)
 	private void initTable() {
 		itemTV = new TableView<>();
+		itemTV.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
 		nameColumn = new TableColumn<>("Name");
 		nameColumn.setCellValueFactory(new PropertyValueFactory<>("Name"));
@@ -84,42 +86,38 @@ public class HomeView extends BorderPane {
 	}
 
 	// 	transaction history table 
-	//	TODO: a mess
-	//	have to display: transaction id + item name, category, size, and price
-	//	private void initHistoryTable() {
-	//		//		user historyTV instead ? 
-	//		//		private TableView<Transaction + Item>??? historyTV;	
-	//		itemTV = new TableView<>();
-	//
-	//		nameColumn = new TableColumn<>("Name");
-	//		nameColumn.setCellValueFactory(new PropertyValueFactory<>("Name"));
-	//
-	//		categoryColumn = new TableColumn<>("Category");
-	//		categoryColumn.setCellValueFactory(new PropertyValueFactory<>("Category"));
-	//
-	//		sizeColumn = new TableColumn<>("Size");
-	//		sizeColumn.setCellValueFactory(new PropertyValueFactory<>("Size"));
-	//
-	//		priceColumn = new TableColumn<>("Price");
-	//		priceColumn.setCellValueFactory(new PropertyValueFactory<>("Price"));
-	//
-	//		itemTV.getColumns().add(nameColumn);
-	//		itemTV.getColumns().add(categoryColumn);
-	//		itemTV.getColumns().add(sizeColumn);
-	//		itemTV.getColumns().add(priceColumn);
-	//
-	//		viewItems();
-	//	}
-	//	private void viewHistory() {
-	//		// 	TODO: possible sol: https://stackoverflow.com/questions/54083513/javafx-populating-tableview-with-models-from-different-classes
-	//		List<Object> history = TransactionController.viewHistory(user.getId());
-	//		ObservableList<Object> historyOL = FXCollections.observableList(history);
-	//		itemTV.setItems(historyOL);
-	//	}
+	private void initHistoryTable() {
+		itemTV = new TableView<>();
 
+		idColumn = new TableColumn<>("Id");
+		idColumn.setCellValueFactory(new PropertyValueFactory<>("Id"));
 
-	//	offer item table (initial table + offer price)
-	//	TODO: back-end nya kelarin duls
+		nameColumn = new TableColumn<>("Name");
+		nameColumn.setCellValueFactory(new PropertyValueFactory<>("Name"));
+
+		categoryColumn = new TableColumn<>("Category");
+		categoryColumn.setCellValueFactory(new PropertyValueFactory<>("Category"));
+
+		sizeColumn = new TableColumn<>("Size");
+		sizeColumn.setCellValueFactory(new PropertyValueFactory<>("Size"));
+
+		priceColumn = new TableColumn<>("Price");
+		priceColumn.setCellValueFactory(new PropertyValueFactory<>("Price"));
+
+		itemTV.getColumns().add(idColumn);
+		itemTV.getColumns().add(nameColumn);
+		itemTV.getColumns().add(categoryColumn);
+		itemTV.getColumns().add(sizeColumn);
+		itemTV.getColumns().add(priceColumn);
+
+		viewItems();
+	}
+	private void viewHistory() {
+		List<Item> history = TransactionController.viewHistory(user.getId());
+		ObservableList<Item> historyOL = FXCollections.observableList(history);
+		itemTV.setItems(historyOL);
+	}
+
 	//	private void initOfferItemTable() {
 	//		itemTV = new TableView<>();
 	//
@@ -147,12 +145,10 @@ public class HomeView extends BorderPane {
 	//		viewOfferItem();
 	//	}
 	//	private void viewOfferItem() {
-	//		List<Item> items = ItemController.viewOfferItem(zzz);
+	//		List<Item> items = ItemController.viewOfferItem();
 	//		ObservableList<Item> itemOL = FXCollections.observableList(items);
 	//		itemTV.setItems(itemOL);
 	//	}
-
-
 
 	private void init() {
 		viewGP = new GridPane();
@@ -228,9 +224,9 @@ public class HomeView extends BorderPane {
 			setGPAll();
 			this.setLeft(viewGP);
 
-			// initHistoryTable();
-			// viewHistory();
-			// scroll.setContent(historyTV);
+			initHistoryTable();
+			viewHistory();
+			scroll.setContent(itemTV);
 		});
 
 		viewOfferItemButton.setOnAction(e -> {
@@ -238,9 +234,9 @@ public class HomeView extends BorderPane {
 			setGPAll();
 			this.setLeft(viewGP);
 
-			// initOfferItemTable();
-			// viewOfferItem();
-			// scroll.setContent(offerItemTV);
+			//			 initOfferItemTable();
+			//			 viewOfferItem();
+			//			 scroll.setContent(offerItemTV);
 		});
 
 		viewRequestedItemButton.setOnAction(e -> {
@@ -269,7 +265,7 @@ public class HomeView extends BorderPane {
 
 		init(); setLayout(); setEvents();
 
-		Scene scene = new Scene(this, 450, 400);
+		Scene scene = new Scene(this, 500, 400);
 		stage.setScene(scene);
 		stage.show();
 	}

@@ -1,5 +1,9 @@
 package controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import model.Item;
 import model.Transaction;
 
 public class TransactionController {
@@ -7,17 +11,18 @@ public class TransactionController {
 		return Transaction.purchaseItem(userId, itemId);
 	}
 
-//	transaction id + item name, category, size, and price TODO: shi dont make sense cuh
-//	public static List<Object> viewHistory(int userId) {
-//		List<Transaction> transactions = Transaction.viewHistory(userId);
-//		
-//		List<Object> history = null; 
-//		for(Transaction transaction : transactions) {
-//			history.add(transaction.getTransactionId(), Item.getItem(transaction.getItemId()));
-//		}
-//		
-//		return history;
-//	}
+	public static List<Item> viewHistory(int userId) {
+		List<Transaction> transactions = Transaction.viewHistory(userId);
+		List<Item> history = new ArrayList<>(); 
+
+		for(Transaction transaction : transactions) {
+			Item item = Item.getItem(transaction.getItemId());
+			item.setId(transaction.getTransactionId());
+			history.add(item);
+		}
+
+		return history;
+	}
 
 	public static void createTransaction(int transactionId) {
 		Transaction.createTransaction(transactionId);

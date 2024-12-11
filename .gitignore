@@ -1,1 +1,4 @@
 /bin/
+.classpath
+src/database/Database.java
+.assignment

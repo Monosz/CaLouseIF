@@ -24,14 +24,14 @@ VALUES
 
 DROP TABLE users;
 
-*/
+ */
 
 public class User {
 	private static Database db = Database.getInstance();
-	
+
 	private int id;
 	private String name, password, phone, address, role;
-	
+
 	public User(int id, String name, String password, String phone, String address, String role) {
 		this.id = id;
 		this.name = name;
@@ -40,25 +40,25 @@ public class User {
 		this.address = address;
 		this.role = role;
 	}
-	
+
 	// ==================================================
 	// =                     LOGIC                      =
 	// ==================================================
 
 	public static int register(String name, String password, String phone, String address, String role) {
 		int validation = checkAccountValidation(name, password, phone, address);
-		
+
 		if(validation<0) {
 			return validation;
 		}
-		
+
 		String query = "INSERT INTO users(user_name, user_password, user_phone, user_address, user_role) "
-					 + "VALUES(?, ?, ?, ?, ?)";
+				+ "VALUES(?, ?, ?, ?, ?)";
 		PreparedStatement ps = db.prepareStatement(query);
-		
+
 		// Remove spaces
 		phone = phone.replaceAll("\\s+", "");
-		
+
 		int res = 0;
 		try {
 			ps.setString(1, name);
@@ -66,24 +66,24 @@ public class User {
 			ps.setString(3, phone);
 			ps.setString(4, address);
 			ps.setString(5, role);
-			
+
 			res = ps.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		return res;
 	}
-	
+
 	private static int checkAccountValidation(String name, String password, String phone, String address) {
-//		name validation (must be unique)
+		//		name validation (must be unique)
 		if (!isUsernameUnique(name)) {
 			return -1;
 		}
-		
+
 		return 1;
 	}
-	
+
 	private static boolean isUsernameUnique(String name) {
 		String query = "SELECT * FROM users WHERE user_name = ?";
 		PreparedStatement ps = db.prepareStatement(query);
@@ -98,24 +98,24 @@ public class User {
 		}
 		return true; 
 	}
-	
+
 	public static User login(String name, String password) {
 		if (name.equals("admin") && password.equals("admin")) {
 			return new User(0, "admin", "admin", null, null, "Admin");
 		}
-		
+
 		String query = "SELECT * FROM users "
-					 + "WHERE user_name = ? "
-					 + "AND user_password = ?";
+				+ "WHERE user_name = ? "
+				+ "AND user_password = ?";
 		PreparedStatement ps = db.prepareStatement(query);
-		
+
 		User user = null;
 		try {
 			ps.setString(1, name);
 			ps.setString(2, password);
-			
+
 			ResultSet rs = ps.executeQuery();
-			
+
 			while (rs.next()) {
 				int id = rs.getInt("user_id");
 				name = rs.getString("user_name");
@@ -123,29 +123,29 @@ public class User {
 				String phone = rs.getString("user_phone"),
 						address = rs.getString("user_address"),
 						role = rs.getString("user_role");
-				
+
 				user = new User(id, name, password, phone, address, role);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		return user;
 	}
-	
-	
+
+
 	// ==================================================
 	// =                 GETTER-SETTER                  =
 	// ==================================================
-	
+
 	public int getId() {
 		return id;
 	}
-	
+
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -185,5 +185,5 @@ public class User {
 	public void setRole(String role) {
 		this.role = role;
 	}
-	
+
 }
