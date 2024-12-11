@@ -18,7 +18,10 @@ CREATE TABLE items (
 	item_category 		VARCHAR(255) 	NOT NULL,
 	item_status 		VARCHAR(10) 	NOT NULL,
 	item_wishlist 		INT 	NOT NULL,
-	item_offer_status	INT	NOT NULL
+	item_offer_status INT,
+	item_offerer_user_id INT,
+
+	FOREIGN KEY (item_offerer_user_id) REFERENCES users(user_id)
 );
 
 DROP TABLE items;
@@ -34,7 +37,7 @@ public class Item {
 	private String name, size;
 	private int price;
 	private String category, status;
-	private int wishlist, offerStatus;
+	private int wishlist, offerStatus, offererUserId;
 
 	public Item(int id, String name, String size, int price, String category) {
 		this.id = id;
@@ -45,7 +48,7 @@ public class Item {
 	}
 
 	public Item(int id, String name, String size, int price, String category, String status, int wishlist,
-			int offerStatus) {
+			int offerStatus, int offererUserId) {
 		this.id = id;
 		this.name = name;
 		this.size = size;
@@ -54,15 +57,16 @@ public class Item {
 		this.status = status;
 		this.wishlist = wishlist;
 		this.offerStatus = offerStatus;
+		this.offererUserId = offererUserId;
 	}
-
+	
 	// ==================================================
 	// =                     LOGIC                      =
 	// ==================================================
 
 	public static int uploadItem(String name, String size, int price, String category) {
-		String query = "INSERT INTO items(item_name, item_size, item_price, item_category, item_status, item_wishlist, item_offer_status) "
-				+ "VALUES(?, ?, ?, ?, ?, ?, ?)";
+		String query = "INSERT INTO items(item_name, item_size, item_price, item_category, item_status, item_wishlist) "
+				+ "VALUES(?, ?, ?, ?, ?, ?)";
 		PreparedStatement ps = db.prepareStatement(query);
 
 		int res = 0;
@@ -73,7 +77,6 @@ public class Item {
 			ps.setString(4, category);
 			ps.setString(5, "PENDING");
 			ps.setInt(6, 0);
-			ps.setInt(7, 0);
 
 			res = ps.executeUpdate();
 		} catch (SQLException e) {
@@ -131,11 +134,11 @@ public class Item {
 
 			while (rs.next()) {
 				int iId = rs.getInt("item_id"), iPrice = rs.getInt("item_price"),
-						iOfferStatus = rs.getInt("item_offer_status"), iWishlist = rs.getInt("item_wishlist");
+						iOfferStatus = rs.getInt("item_offer_status"), iWishlist = rs.getInt("item_wishlist"), iOffererUserId = rs.getInt("item_offerer_user_id");
 				String iName = rs.getString("item_name"), iSize = rs.getString("item_size"),
 						iCategory = rs.getString("item_category"), iStatus = rs.getString("item_status");
 
-				list.add(new Item(iId, iName, iSize, iPrice, iCategory, iStatus, iWishlist, iOfferStatus));
+				list.add(new Item(iId, iName, iSize, iPrice, iCategory, iStatus, iWishlist, iOfferStatus, iOffererUserId));
 			}
 
 		} catch (SQLException e) {
@@ -156,11 +159,11 @@ public class Item {
 
 			while (rs.next()) {
 				int iId = rs.getInt("item_id"), iPrice = rs.getInt("item_price"),
-						iOfferStatus = rs.getInt("item_offer_status"), iWishlist = rs.getInt("item_wishlist");
+						iOfferStatus = rs.getInt("item_offer_status"), iWishlist = rs.getInt("item_wishlist"), iOffererUserId = rs.getInt("item_offerer_user_id");
 				String iName = rs.getString("item_name"), iSize = rs.getString("item_size"),
 						iCategory = rs.getString("item_category"), iStatus = rs.getString("item_status");
 
-				list.add(new Item(iId, iName, iSize, iPrice, iCategory, iStatus, iWishlist, iOfferStatus));
+				list.add(new Item(iId, iName, iSize, iPrice, iCategory, iStatus, iWishlist, iOfferStatus, iOffererUserId));
 			}
 
 		} catch (SQLException e) {
@@ -193,10 +196,10 @@ public class Item {
 
 			while (rs.next()) {
 				int iId = rs.getInt("item_id"), iPrice = rs.getInt("item_price"),
-						iOfferStatus = rs.getInt("item_offer_status"), iWishlist = rs.getInt("item_wishlist");
+						iOfferStatus = rs.getInt("item_offer_status"), iWishlist = rs.getInt("item_wishlist"), iOffererUserId = rs.getInt("item_offerer_user_id");
 				String iName = rs.getString("item_name"), iSize = rs.getString("item_size"),
 						iCategory = rs.getString("item_category"), iStatus = rs.getString("item_status");
-				list.add(new Item(iId, iName, iSize, iPrice, iCategory, iStatus, iWishlist, iOfferStatus));
+				list.add(new Item(iId, iName, iSize, iPrice, iCategory, iStatus, iWishlist, iOfferStatus, iOffererUserId));
 			}
 
 		} catch (SQLException e) {
@@ -265,11 +268,11 @@ public class Item {
 
 			while (rs.next()) {
 				int iId = rs.getInt("item_id"), iPrice = rs.getInt("item_price"),
-						iOfferStatus = rs.getInt("item_offer_status"), iWishlist = rs.getInt("item_wishlist");
+						iOfferStatus = rs.getInt("item_offer_status"), iWishlist = rs.getInt("item_wishlist"), iOffererUserId = rs.getInt("item_offerer_user_id");
 				String iName = rs.getString("item_name"), iSize = rs.getString("item_size"),
 						iCategory = rs.getString("item_category"), iStatus = rs.getString("item_status");
 
-				list.add(new Item(iId, iName, iSize, iPrice, iCategory, iStatus, iWishlist, iOfferStatus));
+				list.add(new Item(iId, iName, iSize, iPrice, iCategory, iStatus, iWishlist, iOfferStatus, iOffererUserId));
 			}
 
 		} catch (SQLException e) {
@@ -279,8 +282,29 @@ public class Item {
 		return list;
 	}
 
-	public static void viewOfferItem(int userId) {
-		// TODO;
+	public static List<Item> viewOfferItem(int userId) {
+		String query = "SELECT * FROM items WHERE item_offerer_user_id = ?";
+		PreparedStatement ps = db.prepareStatement(query);
+
+		List<Item> list = new ArrayList<>();
+		try {
+			ps.setInt(1, userId);
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				int iId = rs.getInt("item_id"), iPrice = rs.getInt("item_price"),
+						iOfferStatus = rs.getInt("item_offer_status"), iWishlist = rs.getInt("item_wishlist"),iOffererUserId = rs.getInt("item_offerer_user_id");
+				String iName = rs.getString("item_name"), iSize = rs.getString("item_size"),
+						iCategory = rs.getString("item_category"), iStatus = rs.getString("item_status");
+
+				list.add(new Item(iId, iName, iSize, iPrice, iCategory, iStatus, iWishlist, iOfferStatus, iOffererUserId));
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return list;
 	}
 
 	// ===========================================================================
@@ -298,11 +322,11 @@ public class Item {
 
 			while (rs.next()) {
 				int iId = rs.getInt("item_id"), iPrice = rs.getInt("item_price"),
-						iOfferStatus = rs.getInt("item_offer_status"), iWishlist = rs.getInt("item_wishlist");
+						iOfferStatus = rs.getInt("item_offer_status"), iWishlist = rs.getInt("item_wishlist"), iOffererUserId = rs.getInt("item_offerer_user_id");
 				String iName = rs.getString("item_name"), iSize = rs.getString("item_size"),
 						iCategory = rs.getString("item_category"), iStatus = rs.getString("item_status");
 
-				item = new Item(iId, iName, iSize, iPrice, iCategory, iStatus, iWishlist, iOfferStatus);
+				item = new Item(iId, iName, iSize, iPrice, iCategory, iStatus, iWishlist, iOfferStatus, iOffererUserId);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
