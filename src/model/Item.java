@@ -67,7 +67,7 @@ public class Item {
 	// ==================================================
 
 	public static int uploadItem(String name, String size, int price, String category, int sellerId) {
-		String query = "INSERT INTO items(item_name, item_size, item_price, item_category, item_status, item_wishlist, item_sellerId)"
+		String query = "INSERT INTO items(item_name, item_size, item_price, item_category, item_status, item_wishlist, item_seller_id)"
 				+ "VALUES(?, ?, ?, ?, ?, ?, ?)";
 		PreparedStatement ps = db.prepareStatement(query);
 

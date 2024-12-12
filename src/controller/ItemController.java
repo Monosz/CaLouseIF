@@ -3,10 +3,19 @@ package controller;
 import java.util.List;
 
 import model.Item;
+import model.User;
 
 public class ItemController {
-	public static int uploadItem(String name, String size, int price, String category, int sellerId) {
-		return Item.uploadItem(name, size, price, category, sellerId);
+	
+	public static String uploadItem(String name, String size, String price, String category, int sellerId) {
+		String validation = checkItemValidation(name, size, price, category);
+
+		if(!validation.isEmpty()) {
+			return validation;
+		}
+		
+		int res = Item.uploadItem(name, size, Integer.parseInt(price), category, sellerId);
+		return res == 0 ? "Upload item failed" : "Upload item succeed";
 	}
 
 	public static int editItem(int id, String name, String size, int price, String category) {
@@ -25,9 +34,39 @@ public class ItemController {
 		return Item.viewItem();
 	}
 
-	//	public static boolean checkItemValidation(String name, String size, int price, String category) {
-	//		TODO
-	//	}
+	public static boolean isNumeric(String str) { 
+		try {  
+			Integer.parseInt(str);
+			return true;
+		} catch(NumberFormatException e){  
+			return false;  
+		}  
+	}
+
+	public static String checkItemValidation(String name, String size, String price, String category) {
+		// check for empty fields
+		if (name.isEmpty() || size.isEmpty() || price.isEmpty() || category.isEmpty()) {
+			return "Please fill in all fields.";
+		}
+
+		// name & category validation 
+		if (name.length() < 3) {
+			return "Item name must be at least 3 characters long.";
+		}
+		if (category.length() < 3) {
+			return "Category name must be at least 3 characters long.";
+		}
+
+		// price validation: cannot be 0, must be number
+		if(!isNumeric(price)) {
+			return "Price must be in number.";
+		}
+		if(Integer.parseInt(price)<=0) {
+			return "Price can not be 0 or lower.";
+		}
+
+		return ""; 
+	}
 
 	public static List<Item> viewRequestedItem(int id, String status) {
 		return Item.viewRequestedItem(id, status);

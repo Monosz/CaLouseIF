@@ -38,9 +38,9 @@ public class HomeView extends BorderPane {
 	
 	private Button viewItemsButton; // all
 	private Button viewWishlistButton, viewHistoryButton; // buyer
-	private Button viewOfferItemButton; // seller
+	private Button viewOfferItemButton, uploadItemButton; // seller
 	private Button viewRequestedItemButton; // admin
-
+	
 	//	SET TABLES (items, wishlist, history, requested items)
 
 	// initial table (default: view items, also for: wish list, requested item)
@@ -156,11 +156,15 @@ public class HomeView extends BorderPane {
 
 		logOutButton = new Button("Logout");
 		viewItemsButton = new Button("View items");
+		
 		viewWishlistButton = new Button("View wishlist");
 		viewHistoryButton = new Button("View history");
+		
 		viewOfferItemButton = new Button("View offered item(s)");
+		uploadItemButton = new Button("Upload Item");
+		
 		viewRequestedItemButton = new Button("View requested item(s)");
-
+		
 		scroll = new ScrollPane();	
 
 		initTable();
@@ -178,6 +182,7 @@ public class HomeView extends BorderPane {
 		viewGP = new GridPane();
 		viewGP.add(logOutButton, 0, 0);
 		viewGP.add(viewOfferItemButton, 0, 1);
+		viewGP.add(uploadItemButton, 0, 2);
 	}
 
 	private void setGPAdmin() {
@@ -248,6 +253,10 @@ public class HomeView extends BorderPane {
 			//			 initOfferItemTable();
 			//			 viewOfferItem();
 			//			 scroll.setContent(offerItemTV);
+		});
+		
+		uploadItemButton.setOnAction(e -> {
+			new UploadItemView(stage);
 		});
 
 		viewRequestedItemButton.setOnAction(e -> {
