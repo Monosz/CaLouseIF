@@ -38,11 +38,13 @@ public class UserController {
 		}
 
 		// password validation (TODO: include specials)
-		if (password.length() < 8) {
-			return "Password must be at least 8 characters long and include a special character (!, @, #, $, etc.).";
+		if (password.length() < 8 || !includeSpecials(password)) {
+			return "Password must be at least 8 characters long and include a special character (!, @, #, $, %, ^, &, *).";
 		}
 
 		// phone number validation
+		// Remove spaces
+		phone = phone.replaceAll("\\s+", "");
 		if (!phone.startsWith("+62") || phone.substring(3).length() < 9) {
 			return "Phone number must start with +62 and be at least 10 digits long.";
 		}
@@ -50,4 +52,14 @@ public class UserController {
 		return ""; 
 	}
 
+	//	specials: (!, @, #, $, %, ^, &, *)
+	private static boolean includeSpecials(String string) {
+		String[] specials = new String[] {"!", "@", "#", "$", "%", "^", "&", "*"};
+		for(String special : specials) {
+			if(string.contains(special)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

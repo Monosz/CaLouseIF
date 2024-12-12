@@ -56,9 +56,6 @@ public class User {
 				+ "VALUES(?, ?, ?, ?, ?)";
 		PreparedStatement ps = db.prepareStatement(query);
 
-		// Remove spaces
-		phone = phone.replaceAll("\\s+", "");
-
 		int res = 0;
 		try {
 			ps.setString(1, name);
