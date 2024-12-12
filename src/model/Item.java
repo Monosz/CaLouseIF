@@ -57,7 +57,7 @@ public class Item {
 		this.status = status;
 		this.wishlist = wishlist;
 		this.offerStatus = offerStatus;
-		this.offererUserId = offererUserId;
+		this.setOffererUserId(offererUserId);
 	}
 	
 	// ==================================================
@@ -401,6 +401,14 @@ public class Item {
 
 	public void setOfferStatus(int offerStatus) {
 		this.offerStatus = offerStatus;
+	}
+
+	public int getOffererUserId() {
+		return offererUserId;
+	}
+
+	public void setOffererUserId(int offererUserId) {
+		this.offererUserId = offererUserId;
 	}
 
 }

@@ -3,7 +3,6 @@ package view;
 import java.util.List;
 import controller.ItemController;
 import controller.TransactionController;
-import controller.UserController;
 import controller.WishlistController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

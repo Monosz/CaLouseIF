@@ -2,10 +2,7 @@ package main;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import model.User;
-import view.HomeView;
 import view.LoginView;
-import view.RegisterView;
 
 public class Main extends Application {
 
