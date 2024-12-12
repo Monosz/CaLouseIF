@@ -7,16 +7,16 @@ VALUES
 	("buyer2", "buyer2", "+62123456790", "Jl. Jalanan Buyer II", "Buyer"),
 	("seller", "seller", "+621234567890", "Jl. Jalanan Seller", "Seller");
 	
-INSERT INTO items(item_name, item_size, item_price, item_category, item_status, item_wishlist, item_offer_status, item_offerer_user_id)
+INSERT INTO items(item_name, item_size, item_price, item_category, item_status, item_wishlist, item_offer_status, item_offerer_id, item_seller_id)
 VALUES
-	("H&M Mouse", "L", 150000, "Jacket", "ACCEPTED", 3, 120000, 3),
-	("UNIQLO Mickey", "L", 150000, "T-Shirt", "ACCEPTED", 1, NULL, NULL),
-	("NEW STATE PARALLEL UI", "L", 150000, "Jacket", "ACCEPTED", 0, 120000, 3),
-	("UNIQLO HXH", "L", 200000, "Shirt", "PURCHASED", 0, NULL, NULL),
-	("WOPPER", "XL", 250000, "Shirt", "PURCHASED", 0, NULL, NULL),
-	("BIG HONEY", "XL", 360000, "Shirt", "PURCHASED", 0, NULL, NULL),
-	("POLO Snoopy", "M", 150000, "Dress", "PENDING", 0, NULL, NULL),
-	("POLO Reject", "M", 150000, "Dress", "PENDING", 0, NULL, NULL);
+	("H&M Mouse", "L", 150000, "Jacket", "ACCEPTED", 3, 120000, 3, 5),
+	("UNIQLO Mickey", "L", 150000, "T-Shirt", "ACCEPTED", 1, NULL, NULL, 5),
+	("NEW STATE PARALLEL UI", "L", 150000, "Jacket", "ACCEPTED", 0, 120000, 3, 2),
+	("UNIQLO HXH", "L", 200000, "Shirt", "PURCHASED", 0, NULL, NULL, 5),
+	("WOPPER", "XL", 250000, "Shirt", "PURCHASED", 0, NULL, NULL, 2),
+	("BIG HONEY", "XL", 360000, "Shirt", "PURCHASED", 0, NULL, NULL, 2),
+	("POLO Snoopy", "M", 150000, "Dress", "PENDING", 0, NULL, NULL, 5),
+	("POLO Reject", "M", 150000, "Dress", "PENDING", 0, NULL, NULL, 2);
 
 	
 INSERT INTO wishlists(user_id, item_id)

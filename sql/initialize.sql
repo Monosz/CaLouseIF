@@ -19,9 +19,12 @@ CREATE TABLE items (
 	item_status VARCHAR(10) NOT NULL,
 	item_wishlist INT NOT NULL,
 	item_offer_status INT,
-	item_offerer_user_id INT,
+	
+	item_offerer_id INT,
+	item_seller_id INT NOT NULL,
 
-	FOREIGN KEY (item_offerer_user_id) REFERENCES users(user_id)
+	FOREIGN KEY (item_offerer_id) REFERENCES users(user_id),
+	FOREIGN KEY (item_seller_id) REFERENCES users(user_id)
 );
 	
 CREATE TABLE wishlists (
