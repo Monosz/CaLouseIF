@@ -34,6 +34,8 @@ public class HomeView extends BorderPane {
 	private TableColumn<Item, String> priceColumn;
 	private TableColumn<Item, String> offerPriceColumn;
 
+	private Button logOutButton;
+	
 	private Button viewItemsButton; // all
 	private Button viewWishlistButton, viewHistoryButton; // buyer
 	private Button viewOfferItemButton; // seller
@@ -152,6 +154,7 @@ public class HomeView extends BorderPane {
 	private void init() {
 		viewGP = new GridPane();
 
+		logOutButton = new Button("Logout");
 		viewItemsButton = new Button("View items");
 		viewWishlistButton = new Button("View wishlist");
 		viewHistoryButton = new Button("View history");
@@ -166,23 +169,27 @@ public class HomeView extends BorderPane {
 
 	private void setGPBuyer() {
 		viewGP = new GridPane();
-		viewGP.add(viewWishlistButton, 0, 0);
-		viewGP.add(viewHistoryButton, 0, 1);
+		viewGP.add(logOutButton, 0, 0);
+		viewGP.add(viewWishlistButton, 0, 1);
+		viewGP.add(viewHistoryButton, 0, 2);
 	}
 
 	private void setGPSeller() {
 		viewGP = new GridPane();
-		viewGP.add(viewOfferItemButton, 0, 0);
+		viewGP.add(logOutButton, 0, 0);
+		viewGP.add(viewOfferItemButton, 0, 1);
 	}
 
 	private void setGPAdmin() {
 		viewGP = new GridPane();
-		viewGP.add(viewRequestedItemButton, 0, 0);
+		viewGP.add(logOutButton, 0, 0);
+		viewGP.add(viewRequestedItemButton, 0, 1);
 	}
 
 	private void setGPAll() {
 		viewGP = new GridPane();
-		viewGP.add(viewItemsButton, 0, 0);
+		viewGP.add(logOutButton, 0, 0);
+		viewGP.add(viewItemsButton, 0, 1);
 	}
 
 	private void setGPInitial() {
@@ -195,6 +202,7 @@ public class HomeView extends BorderPane {
 		} else {
 			System.out.println("Unrecognized user role.");
 		}
+		
 	}
 
 	private void setLayout() {
@@ -207,6 +215,11 @@ public class HomeView extends BorderPane {
 
 
 	private void setEvents() {
+		logOutButton.setOnAction(e -> {
+			stage.setUserData(null);
+			new LoginView(stage);
+		});
+		
 		viewWishlistButton.setOnAction(e -> {
 			// set left grid pane
 			setGPAll();
@@ -219,7 +232,6 @@ public class HomeView extends BorderPane {
 		});
 
 		viewHistoryButton.setOnAction(e -> {
-			System.out.println("bruh"); 
 			setGPAll();
 			this.setLeft(viewGP);
 

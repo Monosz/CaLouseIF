@@ -5,13 +5,13 @@ import java.util.List;
 import model.Item;
 
 public class ItemController {
-	//	public static int uploadItem(String name, String size, int price, String category) {
-	//		TODO
-	//	}
+	public static int uploadItem(String name, String size, int price, String category, int sellerId) {
+		return Item.uploadItem(name, size, price, category, sellerId);
+	}
 
-	//	public static int editItem(int id, String name, String size, int price, String category) {
-	//		TODO
-	//	}
+	public static int editItem(int id, String name, String size, int price, String category) {
+		return Item.editItem(id, name, size, price, category);
+	}
 
 	public static int deleteItem(int id) {
 		return Item.declineItem(id);
@@ -57,6 +57,7 @@ public class ItemController {
 		return Item.viewAcceptedItem(id);
 	}
 
+	//	userId = offererId
 	public static List<Item> viewOfferItem(int userId) {
 		return Item.viewOfferItem(userId);
 	}
