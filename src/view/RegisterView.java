@@ -52,6 +52,7 @@ public class RegisterView extends BorderPane {
 		registerButton = new Button("Register");
 		loginRedirectLabel = new Label("Already have an account? Sign in");
 		errorLabel = new Label();
+		errorLabel.setWrapText(true);
 	}
 
 	private void setLayout() {
