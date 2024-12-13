@@ -8,7 +8,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
@@ -19,7 +18,6 @@ public class UploadItemView extends BorderPane{
 	private User user;
 
 	private GridPane formGP, topGP;
-	private ColumnConstraints col1;
 	private Label titleLabel;
 	private Label nameLabel, categoryLabel, sizeLabel, priceLabel;
 	private TextField nameTextField, categoryTextField, sizeTextField, priceTextField;
@@ -27,10 +25,9 @@ public class UploadItemView extends BorderPane{
 	private Label errorLabel;
 
 	private void init() {
-		topGP = new GridPane();
-		col1 = new ColumnConstraints();
 		backButton = new Button("Go back to home page");
 
+		topGP = new GridPane();
 		titleLabel = new Label("Upload Item");
 		
 		formGP = new GridPane();
@@ -50,14 +47,14 @@ public class UploadItemView extends BorderPane{
 	}
 
 	private void setLayout() {
-		col1.setHgrow(Priority.ALWAYS);
-		topGP.getColumnConstraints().add(col1);
-		topGP.getChildren().add(backButton);
-		GridPane.setColumnIndex(backButton, 1);
+		topGP.add(backButton, 0, 0);
 		titleLabel.setMaxWidth(Double.MAX_VALUE);
 		titleLabel.setAlignment(Pos.CENTER);
-		topGP.add(titleLabel, 0, 2, 2, 1);
-
+		topGP.add(titleLabel, 0, 1);
+		
+		GridPane.setHgrow(backButton, Priority.ALWAYS);
+		GridPane.setHgrow(titleLabel, Priority.ALWAYS);
+		
 		errorLabel.setWrapText(true);
 
 		formGP.add(nameLabel, 0, 0);
