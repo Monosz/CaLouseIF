@@ -8,6 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -23,9 +24,15 @@ public class HomeView extends BorderPane {
 	private User user;
 
 	private GridPane viewGP;
+	private Button viewItemsButton; // all
+	private Button viewWishlistButton, viewHistoryButton; // buyer
+	private Button viewOfferItemButton, uploadItemButton; // seller
+	private Button viewRequestedItemButton; // admin
 
+	
+	private GridPane tableGP;
+	private Label tableLabel;
 	private ScrollPane scroll;
-
 	private TableView<Item> itemTV;	
 	private TableColumn<Item, Integer> idColumn;
 	private TableColumn<Item, String> nameColumn;
@@ -36,13 +43,8 @@ public class HomeView extends BorderPane {
 
 	private Button logOutButton;
 	
-	private Button viewItemsButton; // all
-	private Button viewWishlistButton, viewHistoryButton; // buyer
-	private Button viewOfferItemButton, uploadItemButton; // seller
-	private Button viewRequestedItemButton; // admin
 	
 	//	SET TABLES (items, wishlist, history, requested items)
-
 	// initial table (default: view items, also for: wish list, requested item)
 	private void initTable() {
 		itemTV = new TableView<>();
@@ -153,7 +155,7 @@ public class HomeView extends BorderPane {
 
 	private void init() {
 		viewGP = new GridPane();
-
+		
 		logOutButton = new Button("Logout");
 		viewItemsButton = new Button("View items");
 		
@@ -164,57 +166,62 @@ public class HomeView extends BorderPane {
 		uploadItemButton = new Button("Upload Item");
 		
 		viewRequestedItemButton = new Button("View requested item(s)");
-		
+
+		tableGP = new GridPane();
+		tableLabel = new Label("Items");
 		scroll = new ScrollPane();	
 
 		initTable();
 		viewItems();
 	}
 
-	private void setGPBuyer() {
-		viewGP = new GridPane();
+	private void setViewGPBuyer() {
+		viewGP.getChildren().clear();
 		viewGP.add(logOutButton, 0, 0);
 		viewGP.add(viewWishlistButton, 0, 1);
 		viewGP.add(viewHistoryButton, 0, 2);
 	}
 
-	private void setGPSeller() {
-		viewGP = new GridPane();
+	private void setViewGPSeller() {
+		viewGP.getChildren().clear();
 		viewGP.add(logOutButton, 0, 0);
 		viewGP.add(viewOfferItemButton, 0, 1);
 		viewGP.add(uploadItemButton, 0, 2);
 	}
 
-	private void setGPAdmin() {
-		viewGP = new GridPane();
+	private void setViewGPAdmin() {
+		viewGP.getChildren().clear();
 		viewGP.add(logOutButton, 0, 0);
 		viewGP.add(viewRequestedItemButton, 0, 1);
 	}
 
-	private void setGPAll() {
-		viewGP = new GridPane();
+	private void setViewGPAll() {
+		viewGP.getChildren().clear();
 		viewGP.add(logOutButton, 0, 0);
 		viewGP.add(viewItemsButton, 0, 1);
 	}
 
-	private void setGPInitial() {
+	private void setViewGPInitial() {
+		tableGP.getChildren().clear();
+		tableGP.add(tableLabel, 0, 0);
+		tableGP.add(scroll, 0, 1);
+		
 		if(user.getRole().equals("Admin")) {
-			setGPAdmin();
+			setViewGPAdmin();
 		} else if (user.getRole().equals("Seller")) {
-			setGPSeller();
+			setViewGPSeller();
 		} else if (user.getRole().equals("Buyer")){
-			setGPBuyer();
+			setViewGPBuyer();
 		} else {
 			System.out.println("Unrecognized user role.");
 		}
-		
 	}
 
 	private void setLayout() {
-		setGPInitial();
+		setViewGPInitial();
 		this.setLeft(viewGP);
 
-		this.setRight(scroll);
+		this.setRight(tableGP);
 		scroll.setContent(itemTV);
 	}
 
@@ -227,19 +234,21 @@ public class HomeView extends BorderPane {
 		
 		viewWishlistButton.setOnAction(e -> {
 			// set left grid pane
-			setGPAll();
+			setViewGPAll();
 			this.setLeft(viewGP);
 
-			// set right table
+			// set right grid pane
+			tableLabel.setText("Wishlist");
 			initTable();
 			viewWishlist();
 			scroll.setContent(itemTV);
 		});
 
 		viewHistoryButton.setOnAction(e -> {
-			setGPAll();
+			setViewGPAll();
 			this.setLeft(viewGP);
 
+			tableLabel.setText("Transaction History");
 			initHistoryTable();
 			viewHistory();
 			scroll.setContent(itemTV);
@@ -247,9 +256,10 @@ public class HomeView extends BorderPane {
 
 		viewOfferItemButton.setOnAction(e -> {
 			System.out.println("bruh 2");
-			setGPAll();
+			setViewGPAll();
 			this.setLeft(viewGP);
 
+			//			tableLabel.setText("Offered Items");
 			//			 initOfferItemTable();
 			//			 viewOfferItem();
 			//			 scroll.setContent(offerItemTV);
@@ -260,18 +270,20 @@ public class HomeView extends BorderPane {
 		});
 
 		viewRequestedItemButton.setOnAction(e -> {
-			setGPAll();
+			setViewGPAll();
 			this.setLeft(viewGP);
 
+			tableLabel.setText("Requested Items");
 			initTable();
 			viewRequestedItem();
 			scroll.setContent(itemTV);
 		});
 
 		viewItemsButton.setOnAction(e -> {
-			setGPInitial();
+			setViewGPInitial();
 			this.setLeft(viewGP);
 
+			tableLabel.setText("Items");
 			initTable();
 			viewItems();
 			scroll.setContent(itemTV);

@@ -3,7 +3,6 @@ package controller;
 import java.util.List;
 
 import model.Item;
-import model.User;
 
 public class ItemController {
 	

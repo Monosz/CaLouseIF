@@ -1,6 +1,7 @@
 package view;
 
 import controller.UserController;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -19,6 +20,7 @@ public class RegisterView extends BorderPane {
 	private GridPane gp;
 	private FlowPane fp;
 
+	private Label titleLabel;
 	private Label nameLabel, passwordLabel, phoneLabel, addressLabel, roleLabel;
 	private TextField nameTextField, phoneTextField, addressTextField;
 	private PasswordField passwordField;
@@ -31,6 +33,8 @@ public class RegisterView extends BorderPane {
 		gp = new GridPane();
 		fp = new FlowPane();
 
+		titleLabel = new Label("Register");
+		
 		nameLabel = new Label("Name:");
 		passwordLabel = new Label("Password:");
 		phoneLabel = new Label("Phone Number:");
@@ -52,10 +56,15 @@ public class RegisterView extends BorderPane {
 		registerButton = new Button("Register");
 		loginRedirectLabel = new Label("Already have an account? Sign in");
 		errorLabel = new Label();
-		errorLabel.setWrapText(true);
 	}
 
 	private void setLayout() {
+		titleLabel.setMaxWidth(Double.MAX_VALUE);
+		titleLabel.setAlignment(Pos.CENTER);
+		
+		loginRedirectLabel.setWrapText(true);
+		errorLabel.setWrapText(true);
+		
 		gp.add(nameLabel, 0, 0);
 		gp.add(nameTextField, 1, 0);
 
@@ -70,12 +79,16 @@ public class RegisterView extends BorderPane {
 
 		gp.add(roleLabel, 0, 4);
 		fp.getChildren().addAll(buyerRadioButton, sellerRadioButton);
-		gp.add(fp, 1, 4, 2, 1);
+		fp.setPrefWrapLength(200);
+		gp.add(fp, 1, 4);
 
 		gp.add(registerButton, 0, 5);
-		gp.add(errorLabel, 1, 5, 3, 1);
+		gp.add(errorLabel, 1, 5);
 
 		gp.add(loginRedirectLabel, 0, 6);
+		
+		gp.setAlignment(Pos.BASELINE_CENTER);
+		this.setTop(titleLabel);
 		this.setCenter(gp);
 	}
 
@@ -103,7 +116,7 @@ public class RegisterView extends BorderPane {
 		this.stage = stage;
 		init(); setLayout(); setEvents();
 
-		Scene scene = new Scene(this, 400, 300);
+		Scene scene = new Scene(this, 400, 200);
 		stage.setScene(scene);
 		stage.show();
 	}
