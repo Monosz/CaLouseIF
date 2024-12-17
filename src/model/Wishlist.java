@@ -8,40 +8,46 @@ import java.util.List;
 
 import database.Database;
 
-/*
-
-CREATE TABLE wishlists (
-    wishlist_id	INT	PRIMARY KEY	AUTO_INCREMENT,
-    user_id 	INT NOT NULL,
-    item_id 	INT NOT NULL,
-
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
-    FOREIGN KEY (item_id) REFERENCES items(item_id)
-);
-
-DROP TABLE wishlists;
-
+/**
+ * Represents a user's wishlist in the application.
+ * <p>
+ * Provides methods to view, add, and remove items from a wishlist stored in the
+ * database.
+ * </p>
  */
-
 public class Wishlist {
-	private static Database db = Database.getInstance();
+	private int wishlistId;
+	private int userId;
+	private int itemId;
 
-	private int wishlistId, userId, itemId;
+	private static final Database db = Database.getInstance();
 
+	/**
+	 * Constructs a new Wishlist object.
+	 *
+	 * @param wishlistId the unique identifier for the wishlist
+	 * @param userId     the ID of the user who owns the wishlist
+	 * @param itemId     the ID of the item in the wishlist
+	 */
 	public Wishlist(int wishlistId, int userId, int itemId) {
 		this.wishlistId = wishlistId;
 		this.userId = userId;
 		this.itemId = itemId;
 	}
 
-	// ==================================================
-	// =                     LOGIC                      =
-	// ==================================================
+	// ===================================================
+	// ====================== LOGIC ======================
+	// ===================================================
 
+	/**
+	 * Retrieves the list of items in a user's wishlist from the database.
+	 *
+	 * @param userId the ID of the user whose wishlist is being retrieved
+	 * @return a list of {@code Item} objects representing the items in the wishlist
+	 */
 	public static List<Item> viewWishlist(int userId) {
 		String query = "SELECT i.item_id, i.item_name, i.item_size, i.item_price, i.item_category "
-				+ "FROM wishlists w JOIN items i ON w.item_id = i.item_id "
-				+ "WHERE user_id = ?";
+				+ "FROM wishlists w JOIN items i ON w.item_id = i.item_id " + "WHERE user_id = ?";
 		PreparedStatement ps = db.prepareStatement(query);
 
 		List<Item> list = new ArrayList<>();
@@ -50,10 +56,8 @@ public class Wishlist {
 			ResultSet rs = ps.executeQuery();
 
 			while (rs.next()) {
-				int iId = rs.getInt("item_id"),
-						iPrice = rs.getInt("item_price");
-				String iName = rs.getString("item_name"),
-						iSize = rs.getString("item_size"),
+				int iId = rs.getInt("item_id"), iPrice = rs.getInt("item_price");
+				String iName = rs.getString("item_name"), iSize = rs.getString("item_size"),
 						iCategory = rs.getString("item_category");
 
 				list.add(new Item(iId, iName, iSize, iPrice, iCategory));
@@ -65,9 +69,15 @@ public class Wishlist {
 		return list;
 	}
 
+	/**
+	 * Adds an item to a user's wishlist in the database.
+	 *
+	 * @param userId the ID of the user
+	 * @param itemId the ID of the item to be added
+	 * @return the number of rows affected (1 if successful, 0 otherwise)
+	 */
 	public static int addWishlist(int userId, int itemId) {
-		String query = "INSERT INTO wishlists(user_id, item_id) "
-				+ "VALUES(?, ?)";
+		String query = "INSERT INTO wishlists(user_id, item_id) " + "VALUES(?, ?)";
 		PreparedStatement ps = db.prepareStatement(query);
 
 		int res = 0;
@@ -83,9 +93,14 @@ public class Wishlist {
 		return res;
 	}
 
+	/**
+	 * Removes an item from a user's wishlist in the database.
+	 *
+	 * @param wishlistId the ID of the wishlist entry to be removed
+	 * @return the number of rows affected (1 if successful, 0 otherwise)
+	 */
 	public static int removeWishlist(int wishlistId) {
-		String query = "DELETE FROM wishlists"
-				+ "WHERE wishlist_id = ?";
+		String query = "DELETE FROM wishlists" + "WHERE wishlist_id = ?";
 		PreparedStatement ps = db.prepareStatement(query);
 
 		int res = 0;
@@ -100,9 +115,9 @@ public class Wishlist {
 		return res;
 	}
 
-	// ==================================================
-	// =                 GETTER-SETTER                  =
-	// ==================================================
+	// ===================================================
+	// ================== GETTER-SETTER ==================
+	// ===================================================
 
 	public int getWishlistId() {
 		return wishlistId;
@@ -127,5 +142,4 @@ public class Wishlist {
 	public void setItemId(int itemId) {
 		this.itemId = itemId;
 	}
-
 }
