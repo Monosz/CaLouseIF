@@ -99,4 +99,8 @@ public class ItemController {
 	public static List<Item> viewOfferItem(int userId) {
 		return Item.viewOfferItem(userId);
 	}
+	
+	public static List<Item> viewSellerItem(int userId) {
+		return Item.viewSellerItem(userId);
+	}
 }

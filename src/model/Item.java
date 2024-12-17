@@ -38,7 +38,8 @@ public class Item {
 	private String name, size;
 	private int price;
 	private String category, status;
-	private int wishlist, offerStatus, offererId, sellerId;
+	private int wishlist, offerStatus;
+	private int offererId, sellerId;
 
 	public Item(int id, String name, String size, int price, String category) {
 		this.id = id;
@@ -59,7 +60,7 @@ public class Item {
 		this.wishlist = wishlist;
 		this.offerStatus = offerStatus;
 		this.offererId = offererId;
-		this.setSellerId(sellerId);
+		this.sellerId = sellerId;
 	}
 
 	// ==================================================
@@ -309,8 +310,10 @@ public class Item {
 		return list;
 	}
 
+	// di diagram parameter nya userId tapi keknya lebih tepat seller id 
+	// (lihat semua item seller yg ada offer nya, terlepas dari user)
 	public static List<Item> viewOfferItem(int userId) {
-		String query = "SELECT * FROM items WHERE item_offerer_id = ?";
+		String query = "SELECT * FROM items WHERE item_seller_id = ? AND item_offer_status IS NOT NULL";
 		PreparedStatement ps = db.prepareStatement(query);
 
 		List<Item> list = new ArrayList<>();
@@ -340,9 +343,9 @@ public class Item {
 		return list;
 	}
 
-	// ===========================================================================
-	// = ADDITIONAL METHODS (not in class diagram, but in sequence diagram(s)=
-	// ===========================================================================
+	// ===================================================================================================
+	// = ADDITIONAL METHODS (not in class diagram, but in sequence diagram(s), or just needed in general)=
+	// ===================================================================================================
 	// (getItem(by Id) method, found in view wishlist sequence diagram, also needed in view history)
 	public static Item getItem(int id) { 
 		String query = "SELECT * FROM items WHERE item_id = ?";
@@ -373,6 +376,39 @@ public class Item {
 
 		return item;
 	}
+	
+	public static List<Item> viewSellerItem(int userId) {
+		String query = "SELECT * FROM items WHERE item_seller_id= ?";
+		PreparedStatement ps = db.prepareStatement(query);
+
+		List<Item> list = new ArrayList<>();
+		try {
+			ps.setInt(1, userId);
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				int iId = rs.getInt("item_id"), 
+						iPrice = rs.getInt("item_price"),
+						iOfferStatus = rs.getInt("item_offer_status"), 
+						iWishlist = rs.getInt("item_wishlist"),
+						iOffererId = rs.getInt("item_offerer_id"), 
+						iSellerId = rs.getInt("item_seller_id");
+				String iName = rs.getString("item_name"), 
+						iSize = rs.getString("item_size"),
+						iCategory = rs.getString("item_category"), 
+						iStatus = rs.getString("item_status");
+
+				list.add(new Item(iId, iName, iSize, iPrice, iCategory, iStatus, iWishlist, iOfferStatus, iOffererId, iSellerId));
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
+ 
 
 	// ==================================================
 	// = GETTER-SETTER =
