@@ -11,9 +11,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
+import model.Item;
 import model.User;
 
-public class UploadItemView extends BorderPane{
+public class EditItemView extends BorderPane{
 	private Stage stage;
 	private User user;
 
@@ -21,15 +22,17 @@ public class UploadItemView extends BorderPane{
 	private Label titleLabel;
 	private Label nameLabel, categoryLabel, sizeLabel, priceLabel;
 	private TextField nameTextField, categoryTextField, sizeTextField, priceTextField;
-	private Button uploadItemButton, backButton;
+	private Button saveChangesButton, backButton;
 	private Label errorLabel;
+
+	private Item item;
 
 	private void init() {
 		backButton = new Button("Go back to home page");
 
 		topGP = new GridPane();
-		titleLabel = new Label("Upload Item");
-		
+		titleLabel = new Label("Edit Item");
+
 		formGP = new GridPane();
 		nameLabel = new Label("Name:");
 		categoryLabel = new Label("Category:");
@@ -37,11 +40,16 @@ public class UploadItemView extends BorderPane{
 		priceLabel = new Label("Price:");
 
 		nameTextField = new TextField();
+		nameTextField.setText(item.getName());
 		categoryTextField = new TextField();
+		categoryTextField.setText(item.getCategory());
 		sizeTextField = new TextField();
+		sizeTextField.setText(item.getSize());
 		priceTextField = new TextField();
-
-		uploadItemButton = new Button("Upload Item");
+		Integer temp = item.getPrice(); 
+		String price = temp.toString();
+		priceTextField.setText(price);
+		saveChangesButton = new Button("Save Changes");
 		errorLabel = new Label();
 		errorLabel.setWrapText(true);
 	}
@@ -51,10 +59,10 @@ public class UploadItemView extends BorderPane{
 		titleLabel.setMaxWidth(Double.MAX_VALUE);
 		titleLabel.setAlignment(Pos.CENTER);
 		topGP.add(titleLabel, 0, 1);
-		
+
 		GridPane.setHgrow(backButton, Priority.ALWAYS);
 		GridPane.setHgrow(titleLabel, Priority.ALWAYS);
-		
+
 		errorLabel.setWrapText(true);
 
 		formGP.add(nameLabel, 0, 0);
@@ -69,8 +77,8 @@ public class UploadItemView extends BorderPane{
 		formGP.add(priceLabel, 0, 3);
 		formGP.add(priceTextField, 1, 3);
 
-		formGP.add(uploadItemButton, 0, 6, 2, 1);
-		GridPane.setHalignment(uploadItemButton, HPos.CENTER);
+		formGP.add(saveChangesButton, 0, 6, 2, 1);
+		GridPane.setHalignment(saveChangesButton, HPos.CENTER);
 
 		formGP.add(errorLabel, 1, 5);
 
@@ -84,13 +92,13 @@ public class UploadItemView extends BorderPane{
 			new HomeView(stage);
 		});
 
-		uploadItemButton.setOnMouseClicked(e -> {
+		saveChangesButton.setOnMouseClicked(e -> {
 			String name = nameTextField.getText().strip(),
 					category = categoryTextField.getText().strip(),
 					size = sizeTextField.getText().strip(),
 					price= priceTextField.getText().strip(),
-					message = ItemController.uploadItem(name, size, price, category, user.getId());
-			if (message.equals("Upload item succeed")) {
+					message = ItemController.editItem(item.getId(),name, size, price, category);
+			if (message.equals("Changes saved")) {
 				new HomeView(stage);				
 			} else {
 				errorLabel.setText(message);
@@ -98,9 +106,10 @@ public class UploadItemView extends BorderPane{
 		});
 	}
 
-	public UploadItemView(Stage stage) {
+	public EditItemView(Stage stage, int id) {
 		this.stage = stage;
 		this.user = (User) stage.getUserData();
+		this.item = Item.getItem(id);
 
 		init(); setLayout(); setEvents();
 

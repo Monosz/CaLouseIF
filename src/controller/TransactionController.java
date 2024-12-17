@@ -7,8 +7,19 @@ import model.Item;
 import model.Transaction;
 
 public class TransactionController {
-	public static int purchaseItem(int userId, int itemId) {
-		return Transaction.purchaseItem(userId, itemId);
+	public static String purchaseItem(int userId, int itemId) {
+		// generate transaction
+		int res = Transaction.createTransaction(userId, itemId);
+		
+		if(res == 0 ) {
+			// purchase failed
+			return "Transaction failed to create";
+		} else {
+			// purchase succeed -> delete item from every user's wishlist
+			Item.updateStatusToPurchased(itemId);
+			Item.deleteItemFromWishlists(itemId);
+			return "You've successfully purchased item";
+		}
 	}
 
 	public static List<Item> viewHistory(int userId) {
@@ -24,7 +35,7 @@ public class TransactionController {
 		return history;
 	}
 
-	public static void createTransaction(int transactionId) {
-		Transaction.createTransaction(transactionId);
+	public static int createTransaction(int userId, int itemId) {
+		return Transaction.createTransaction(userId, itemId);
 	}
 }

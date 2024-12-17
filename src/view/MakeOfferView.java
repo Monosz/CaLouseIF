@@ -13,7 +13,7 @@ import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 import model.User;
 
-public class UploadItemView extends BorderPane{
+public class MakeOfferView extends BorderPane{
 	private Stage stage;
 	private User user;
 
@@ -23,6 +23,8 @@ public class UploadItemView extends BorderPane{
 	private TextField nameTextField, categoryTextField, sizeTextField, priceTextField;
 	private Button uploadItemButton, backButton;
 	private Label errorLabel;
+	
+	private int itemId;
 
 	private void init() {
 		backButton = new Button("Go back to home page");
@@ -90,18 +92,19 @@ public class UploadItemView extends BorderPane{
 					size = sizeTextField.getText().strip(),
 					price= priceTextField.getText().strip(),
 					message = ItemController.uploadItem(name, size, price, category, user.getId());
-			if (message.equals("Upload item succeed")) {
-				new HomeView(stage);				
+			if (message.equals("Register success")) {
+				new LoginView(stage);				
 			} else {
 				errorLabel.setText(message);
 			}
 		});
 	}
 
-	public UploadItemView(Stage stage) {
+	public MakeOfferView(Stage stage, int id) {
 		this.stage = stage;
 		this.user = (User) stage.getUserData();
-
+		this.itemId = id;
+		
 		init(); setLayout(); setEvents();
 
 		Scene scene = new Scene(this, 400, 300);

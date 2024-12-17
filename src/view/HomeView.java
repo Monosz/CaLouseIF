@@ -6,24 +6,30 @@ import controller.TransactionController;
 import controller.WishlistController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableSelectionModel;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import model.Item;
 import model.User;
 
-public class HomeView extends BorderPane implements EventHandler<ActionEvent> {
+public class HomeView extends BorderPane {
 	private Stage stage;
 	private User user;
 
@@ -49,7 +55,8 @@ public class HomeView extends BorderPane implements EventHandler<ActionEvent> {
 
 	private GridPane actionGP;
 	private Label selectedLabel, errorLabel;
-	private TextField selectedTF; // item id
+	private TextField selectedItemTF; // item id
+	private int tempItemId;
 	private Button purchaseItemButton, makeOfferButton; // buyer
 	private Button addToWishlistButton, removeFromWishlistButton; // buyer
 	private Button editItemButton, deleteItemButton; // seller
@@ -59,7 +66,7 @@ public class HomeView extends BorderPane implements EventHandler<ActionEvent> {
 	private Button logOutButton;
 
 	// INITIALIZE TABLES (right grid pane) 
-	// initial table (default: view items, also used for: wish list, requested item, seller item)
+	// initial table (default: view items, also used to: view wishlist, requested item)
 	// columns = name, category, size, price
 	private void initTable() {
 		itemTV = new TableView<>();
@@ -81,30 +88,16 @@ public class HomeView extends BorderPane implements EventHandler<ActionEvent> {
 		itemTV.getColumns().add(categoryColumn);
 		itemTV.getColumns().add(sizeColumn);
 		itemTV.getColumns().add(priceColumn);
+
+		itemTV.setOnMouseClicked(tableClicked());
 	}
 
-	private void viewItems() {
-		List<Item> items = ItemController.viewItem();
-		ObservableList<Item> itemOL = FXCollections.observableList(items);
-		itemTV.setItems(itemOL);
-	}
-
-	private void viewWishlist() {
-		List<Item> wishlist = WishlistController.viewWishlist(user.getId());
-		ObservableList<Item> wishlistOL = FXCollections.observableList(wishlist);
-		itemTV.setItems(wishlistOL);
-	}
-
-	private void viewRequestedItem() {
-		List<Item> requestedItems = ItemController.viewRequestedItem(1, "PENDING");
-		ObservableList<Item> requestedItemsOL = FXCollections.observableList(requestedItems);
-		itemTV.setItems(requestedItemsOL);
-	}
-
-	// transaction history table (for buyers)
+	// transaction history table (for buyers) (used to view history)
 	// columns = transaction id + name, category, size, price	
 	private void initHistoryTable() {
 		itemTV = new TableView<>();
+		itemTV.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		itemTV.getColumns().clear();
 
 		idColumn = new TableColumn<>("Id");
 		idColumn.setCellValueFactory(new PropertyValueFactory<>("Id"));
@@ -126,18 +119,16 @@ public class HomeView extends BorderPane implements EventHandler<ActionEvent> {
 		itemTV.getColumns().add(categoryColumn);
 		itemTV.getColumns().add(sizeColumn);
 		itemTV.getColumns().add(priceColumn);
+		
+		itemTV.setOnMouseClicked(tableClicked());
 	}
 
-	private void viewHistory() {
-		List<Item> history = TransactionController.viewHistory(user.getId());
-		ObservableList<Item> historyOL = FXCollections.observableList(history);
-		itemTV.setItems(historyOL);
-	}
-
-	// Seller items table (for seller)
+	// Seller items table (for seller) (used to view seller items)
 	// columns = name, category, size, price + status
 	private void initSellerItemsTable() {
 		itemTV = new TableView<>();
+		itemTV.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		itemTV.getColumns().clear();
 
 		nameColumn = new TableColumn<>("Name");
 		nameColumn.setCellValueFactory(new PropertyValueFactory<>("Name"));
@@ -159,16 +150,16 @@ public class HomeView extends BorderPane implements EventHandler<ActionEvent> {
 		itemTV.getColumns().add(sizeColumn);
 		itemTV.getColumns().add(priceColumn);
 		itemTV.getColumns().add(statusColumn);
+		
+		itemTV.setOnMouseClicked(tableClicked());
 	}
 
-	private void viewSellerItems() {
-		List<Item> sellerItems = ItemController.viewSellerItem(user.getId());
-		ObservableList<Item> sellerItemsOL = FXCollections.observableList(sellerItems);
-		itemTV.setItems(sellerItemsOL);
-	}
-
+	// offer items table (for seller) (used to view offered items)
+	// columns = name, category, size, price + status
 	private void initOfferItemTable() {
 		itemTV = new TableView<>();
+		itemTV.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		itemTV.getColumns().clear();
 
 		nameColumn = new TableColumn<>("Name");
 		nameColumn.setCellValueFactory(new PropertyValueFactory<>("Name"));
@@ -191,11 +182,47 @@ public class HomeView extends BorderPane implements EventHandler<ActionEvent> {
 		itemTV.getColumns().add(sizeColumn);
 		itemTV.getColumns().add(priceColumn);
 		itemTV.getColumns().add(offerPriceColumn);
+		
+		itemTV.setOnMouseClicked(tableClicked());
 	}
-	private void viewOfferItem() {
-		List<Item> items = ItemController.viewOfferItem(user.getId());
+
+	private void refreshTable(List<Item> items) {
+		itemTV.getItems().clear();
+
 		ObservableList<Item> itemOL = FXCollections.observableList(items);
 		itemTV.setItems(itemOL);
+	}
+
+
+	private void viewItems() {
+		List<Item> items = ItemController.viewItem();
+		refreshTable(items);
+	}
+
+	private void viewWishlist() {
+		List<Item> wishlist = WishlistController.viewWishlist(user.getId());
+		refreshTable(wishlist);
+	}
+
+	private void viewRequestedItem() {
+		List<Item> requestedItems = ItemController.viewRequestedItem(1, "PENDING");
+		refreshTable(requestedItems);
+	}
+
+	private void viewHistory() {
+		List<Item> history = TransactionController.viewHistory(user.getId());
+		refreshTable(history);
+	}
+
+
+	private void viewSellerItems() {
+		List<Item> sellerItems = ItemController.viewSellerItem(user.getId());
+		refreshTable(sellerItems);
+	}
+
+	private void viewOfferItem() {
+		List<Item> offerItems = ItemController.viewOfferItem(user.getId());
+		refreshTable(offerItems);
 	}
 
 	//	INITIALIZE DATA
@@ -234,7 +261,7 @@ public class HomeView extends BorderPane implements EventHandler<ActionEvent> {
 		actionGP = new GridPane();
 
 		selectedLabel = new Label("Selected Item: ");
-		selectedTF = new TextField();
+		selectedItemTF = new TextField();
 		errorLabel = new Label();
 
 		// initial
@@ -254,6 +281,8 @@ public class HomeView extends BorderPane implements EventHandler<ActionEvent> {
 
 		approveItemButton = new Button("Approve Item"); 
 		declineItemButton = new Button("Decline Item");
+
+		tempItemId = 0;
 	}
 
 	//	SET VIEW GP (left grid pane)
@@ -316,7 +345,7 @@ public class HomeView extends BorderPane implements EventHandler<ActionEvent> {
 	private void setActionGPBase() {
 		actionGP.getChildren().clear();
 		actionGP.add(selectedLabel, 0, 0);
-		actionGP.add(selectedTF, 1, 0); 
+		actionGP.add(selectedItemTF, 1, 0); 
 		actionGP.add(errorLabel, 0, 1, 2, 1);
 	}
 
@@ -347,7 +376,7 @@ public class HomeView extends BorderPane implements EventHandler<ActionEvent> {
 			System.out.println("Unrecognized user role.");
 		}
 	}
-	
+
 	// Requested items
 	private void setActionGPAdminRequests() {
 		setActionGPBase();
@@ -366,7 +395,7 @@ public class HomeView extends BorderPane implements EventHandler<ActionEvent> {
 		actionGP.add(addToWishlistButton, 0, 2);
 		actionGP.add(removeFromWishlistButton, 1, 2);
 	}
-	
+
 	private void setLayout() {
 		setViewGPInitial();
 		this.setLeft(viewGP);
@@ -376,7 +405,7 @@ public class HomeView extends BorderPane implements EventHandler<ActionEvent> {
 		scroll.setContent(itemTV);
 
 		actionGP.setAlignment(Pos.CENTER);
-		selectedTF.setPrefWidth(50);
+		selectedItemTF.setPrefWidth(50);
 		setActionGPInitial();
 		this.setBottom(actionGP);
 	}
@@ -398,7 +427,7 @@ public class HomeView extends BorderPane implements EventHandler<ActionEvent> {
 			initTable();
 			viewWishlist();
 			scroll.setContent(itemTV);
-			
+
 			// set bottom grid pane
 			setActionGPBuyerWishlist();
 		});
@@ -411,7 +440,7 @@ public class HomeView extends BorderPane implements EventHandler<ActionEvent> {
 			initHistoryTable();
 			viewHistory();
 			scroll.setContent(itemTV);
-			
+
 			setActionGPBase();
 		});
 
@@ -423,7 +452,7 @@ public class HomeView extends BorderPane implements EventHandler<ActionEvent> {
 			initOfferItemTable();
 			viewOfferItem();
 			scroll.setContent(itemTV);
-			
+
 			setActionGPSellerOffers();
 		});
 
@@ -439,7 +468,7 @@ public class HomeView extends BorderPane implements EventHandler<ActionEvent> {
 			initTable();
 			viewRequestedItem();
 			scroll.setContent(itemTV);
-			
+
 			setActionGPAdminRequests();
 		});
 
@@ -451,7 +480,7 @@ public class HomeView extends BorderPane implements EventHandler<ActionEvent> {
 			initTable();
 			viewItems();
 			scroll.setContent(itemTV);
-			
+
 			setActionGPInitial();
 		});
 
@@ -463,16 +492,108 @@ public class HomeView extends BorderPane implements EventHandler<ActionEvent> {
 			initSellerItemsTable();
 			viewSellerItems();
 			scroll.setContent(itemTV);
-			
+
 			setActionGPInitial();
 		});
+		
+		purchaseItemButton.setOnAction(e -> {
+			purchaseItem(user.getId(), tempItemId);
+			viewItems();
+	        itemTV.refresh();
+		});
+
+		makeOfferButton.setOnAction(e -> {
+		    new MakeOfferView(stage, tempItemId);
+		});
+
+		editItemButton.setOnAction(e -> {
+		    new EditItemView(stage, tempItemId);
+		});
+
+		deleteItemButton.setOnAction(e -> {
+		    int res = ItemController.deleteItem(tempItemId);
+		    if (res > 0) {
+		        viewSellerItems();
+		        itemTV.refresh();
+		        errorLabel.setText("Item deleted successfully");
+		    } else {
+		        errorLabel.setText("Item failed to be deleted");
+		    }
+		});
+
+		addToWishlistButton.setOnAction(e -> {
+		    // Add code to add item to wishlist here
+			viewWishlist();
+	        itemTV.refresh();
+		});
+
+		removeFromWishlistButton.setOnAction(e -> {
+		    // Add code to remove item from wishlist here
+			viewWishlist();
+	        itemTV.refresh();
+		});
+
+		acceptOfferButton.setOnAction(e -> {
+		    // Add code for accepting an offer here
+			viewOfferItem();
+			itemTV.refresh();
+		});
+
+		declineOfferButton.setOnAction(e -> {
+		    // Add code for declining an offer here
+			viewOfferItem();
+			itemTV.refresh();
+		});
+
+		approveItemButton.setOnAction(e -> {
+		    int res = ItemController.approveItem(tempItemId);
+		    if (res > 0) {
+		        viewRequestedItem();
+		        itemTV.refresh();
+		        errorLabel.setText("Item approved");
+		    } else {
+		        errorLabel.setText("Item failed to be approved");
+		    }
+		});
+
+		declineItemButton.setOnAction(e -> {
+		    // Add code for declining item here
+		});
+	}
+	
+	private void purchaseItem(int uid, int iid) {
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+	    alert.setTitle("Purchase Confirmation");
+	    alert.setHeaderText("Are you sure you want to purchase this item?");
+	    alert.setContentText("This action cannot be undone.");
+
+	    ButtonType buttonTypeYes = new ButtonType("Yes");
+	    ButtonType buttonTypeNo = new ButtonType("No", ButtonData.CANCEL_CLOSE);
+
+	    alert.getButtonTypes().setAll(buttonTypeYes, buttonTypeNo);
+
+	    alert.showAndWait().ifPresent(response -> {
+	        if (response == buttonTypeYes) {
+			    errorLabel.setText(TransactionController.purchaseItem(user.getId(), tempItemId));
+	        } else {
+	            System.out.println("Item not purchased.");
+	        }
+	    });
 	}
 
-	@Override
-	public void handle(ActionEvent event) {
-		//		if(event.getSource() == addBtn) {
-		//			
-		//		}
+	private EventHandler<MouseEvent> tableClicked() {
+		return new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				TableSelectionModel<Item> tableSelectionMode = itemTV.getSelectionModel();
+				tableSelectionMode.setSelectionMode(SelectionMode.SINGLE);
+
+				Item item = tableSelectionMode.getSelectedItem();
+				selectedItemTF.setText(item.getName());
+				tempItemId = item.getId();
+			}
+		};
 	}
 
 	public HomeView(Stage stage) {
@@ -481,7 +602,7 @@ public class HomeView extends BorderPane implements EventHandler<ActionEvent> {
 
 		init(); setLayout(); setEvents();
 
-		Scene scene = new Scene(this, 500, 400);
+		Scene scene = new Scene(this, 600, 400);
 		stage.setScene(scene);
 		stage.show();
 	}

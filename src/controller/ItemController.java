@@ -5,24 +5,31 @@ import java.util.List;
 import model.Item;
 
 public class ItemController {
-	
+
 	public static String uploadItem(String name, String size, String price, String category, int sellerId) {
 		String validation = checkItemValidation(name, size, price, category);
 
 		if(!validation.isEmpty()) {
 			return validation;
 		}
-		
+
 		int res = Item.uploadItem(name, size, Integer.parseInt(price), category, sellerId);
 		return res == 0 ? "Upload item failed" : "Upload item succeed";
 	}
 
-	public static int editItem(int id, String name, String size, int price, String category) {
-		return Item.editItem(id, name, size, price, category);
+	public static String editItem(int id, String name, String size, String price, String category) {
+		String validation = checkItemValidation(name, size, price, category);
+
+		if(!validation.isEmpty()) {
+			return validation;
+		}
+		
+		int res = Item.editItem(id, name, size, Integer.parseInt(price), category);
+		return res == 0 ? "Failed to save changes" : "Changes saved";
 	}
 
 	public static int deleteItem(int id) {
-		return Item.declineItem(id);
+		return Item.deleteItem(id);
 	}
 
 	public static List<Item> browseItem(String name) {
@@ -71,9 +78,25 @@ public class ItemController {
 		return Item.viewRequestedItem(id, status);
 	}
 
-	//	public static void offerPrice(int id, int price) {
-	//		TODO
-	//	}
+	public static String offerPrice(int id, String price, int uid) {
+		if(price.isEmpty()) {
+			return "Please fill in the field";
+		}
+		if(!isNumeric(price)) {
+			return "Price must be in number.";
+		}
+		if(Integer.parseInt(price)<=0) {
+			return "Price can not be 0 or lower.";
+		}
+		
+		Integer offerStatus = Item.getItem(uid).getOfferStatus();
+	    if (offerStatus != null && Integer.parseInt(price) < offerStatus) {
+	        return "Price cannot be lower than the current offer price.";
+	    }
+	    
+	    Item.offerPrice(id, Integer.parseInt(price), uid);
+	    return "Offer placed successfully";
+	}
 
 	public static void acceptOffer(int id) {
 		Item.acceptOffer(id);
@@ -99,7 +122,7 @@ public class ItemController {
 	public static List<Item> viewOfferItem(int userId) {
 		return Item.viewOfferItem(userId);
 	}
-	
+
 	public static List<Item> viewSellerItem(int userId) {
 		return Item.viewSellerItem(userId);
 	}

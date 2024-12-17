@@ -112,20 +112,25 @@ public class Item {
 	}
 
 	public static int deleteItem(int id) {
-		String query = "DELETE FROM items WHERE item_id = ?";
-		PreparedStatement ps = db.prepareStatement(query);
+		String deleteFromWishlistQuery = "DELETE FROM wishlists WHERE item_id = ?";
+		String deleteFromItemsQuery = "DELETE FROM items WHERE item_id = ?";
+		PreparedStatement ps1 = db.prepareStatement(deleteFromWishlistQuery);
+		PreparedStatement ps2 = db.prepareStatement(deleteFromItemsQuery);
 
 		int res = 0;
 		try {
-			ps.setInt(1, id);
+			ps1.setInt(1, id);
+			ps1.executeUpdate();
 
-			res = ps.executeUpdate();
+			ps2.setInt(1, id);
+			res = ps2.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
 		return res;
 	}
+
 
 	public static List<Item> browseItem(String name) {
 		String query = "SELECT * FROM items WHERE item_name = ?";
@@ -231,8 +236,24 @@ public class Item {
 		return list;
 	}
 
-	public static void offerPrice(int id, int price) {
-		// TODO:
+	public static int offerPrice(int id, int price, int uid) {
+		String query = "UPDATE items SET item_offer_status = ?, item_offerer_id = ?"
+				+ "WHERE item_id = ?";
+		PreparedStatement ps = db.prepareStatement(query);
+
+		int res = 0;
+		try {
+			ps.setInt(1, price);
+			ps.setInt(2, uid);
+			ps.setInt(3, id);
+
+			res = ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return res;
+
 	}
 
 	public static void acceptOffer(int id) {
@@ -240,7 +261,7 @@ public class Item {
 	}
 
 	public static void declineOffer(int id) {
-		// TODO:
+
 	}
 
 	public static int approveItem(int id) {
@@ -376,7 +397,7 @@ public class Item {
 
 		return item;
 	}
-	
+
 	public static List<Item> viewSellerItem(int userId) {
 		String query = "SELECT * FROM items WHERE item_seller_id= ?";
 		PreparedStatement ps = db.prepareStatement(query);
@@ -408,7 +429,37 @@ public class Item {
 		return list;
 	}
 
- 
+	// untuk transactions
+	public static int updateStatusToPurchased(int id) {
+		String query = "UPDATE items SET item_status = ? WHERE item_id = ?";
+		PreparedStatement ps = db.prepareStatement(query);
+
+		int res = 0;
+		try {
+			ps.setString(1, "PURCHASED");
+			ps.setInt(2, id);
+
+			res = ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return res;
+	}
+	
+	public static int deleteItemFromWishlists(int id) {
+		String query = "DELETE FROM wishlists WHERE item_id = ?";
+		PreparedStatement ps = db.prepareStatement(query);
+		int res = 0;
+		try{
+			ps.setInt(1, id);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return res;
+	}
 
 	// ==================================================
 	// = GETTER-SETTER =

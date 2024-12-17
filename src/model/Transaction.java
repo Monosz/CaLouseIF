@@ -39,7 +39,7 @@ public class Transaction {
 	// ==================================================
 
 	public static int purchaseItem(int userId, int itemId) {
-		String query = "INSERT INTO transaction(user_id, item_id) "
+		String query = "INSERT INTO transactions(user_id, item_id) "
 				+ "VALUES(?, ?)";
 		PreparedStatement ps = db.prepareStatement(query);
 
@@ -80,8 +80,22 @@ public class Transaction {
 		return list;
 	}
 
-	public static void createTransaction(int transactionId) {
-		// TODO: Verify method createTransaction() requirement @lab_assistant
+	public static int createTransaction(int userId, int itemId) {
+		String query = "INSERT INTO transactions(user_id, item_id) "
+				+ "VALUES(?, ?)";
+		PreparedStatement ps = db.prepareStatement(query);
+
+		int res = 0;
+		try {
+			ps.setInt(1, userId);
+			ps.setInt(2, itemId);
+
+			res = ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return res;
 	}
 
 	// ==================================================
