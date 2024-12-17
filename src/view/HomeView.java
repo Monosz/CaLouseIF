@@ -8,12 +8,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -46,7 +48,8 @@ public class HomeView extends BorderPane implements EventHandler<ActionEvent> {
 	private TableColumn<Item, String> statusColumn;
 
 	private GridPane actionGP;
-	private Label selectedLabel;
+	private Label selectedLabel, errorLabel;
+	private TextField selectedTF; // item id
 	private Button purchaseItemButton, makeOfferButton; // buyer
 	private Button addToWishlistButton, removeFromWishlistButton; // buyer
 	private Button editItemButton, deleteItemButton; // seller
@@ -231,6 +234,8 @@ public class HomeView extends BorderPane implements EventHandler<ActionEvent> {
 		actionGP = new GridPane();
 
 		selectedLabel = new Label("Selected Item: ");
+		selectedTF = new TextField();
+		errorLabel = new Label();
 
 		// initial
 		purchaseItemButton = new Button("Purchase Item");
@@ -272,6 +277,18 @@ public class HomeView extends BorderPane implements EventHandler<ActionEvent> {
 		viewGP.add(viewRequestedItemButton, 0, 1);
 	}
 
+	private void setViewGPInitial() {
+		if(user.getRole().equals("Admin")) {
+			setViewGPAdmin();
+		} else if (user.getRole().equals("Seller")) {
+			setViewGPSeller();
+		} else if (user.getRole().equals("Buyer")){
+			setViewGPBuyer();
+		} else {
+			System.out.println("Unrecognized user role.");
+		}
+	}
+
 	//	BA = buyer, admin
 	private void setViewGPInitBA() {
 		viewGP.getChildren().clear();
@@ -285,32 +302,82 @@ public class HomeView extends BorderPane implements EventHandler<ActionEvent> {
 		viewGP.add(viewItemsSellerButton, 0, 1);
 	}
 
-	private void setViewGPInitial() {
+
+	// SET TABLE GP (right grid pane)
+	private void setTableGPInitial() {
 		tableGP.getChildren().clear();
 		tableGP.add(tableLabel, 0, 0);
 		tableGP.add(scroll, 0, 1);
+	}
 
+
+	//	SET ACTION GP (bottom grid pane)
+
+	private void setActionGPBase() {
+		actionGP.getChildren().clear();
+		actionGP.add(selectedLabel, 0, 0);
+		actionGP.add(selectedTF, 1, 0); 
+		actionGP.add(errorLabel, 0, 1, 2, 1);
+	}
+
+	private void setActionGPAdminInit() {
+		setActionGPBase();
+	}
+
+	private void setActionGPSellerInit() {
+		setActionGPBase();
+		actionGP.add(editItemButton, 0, 2);
+		actionGP.add(deleteItemButton, 1, 2);
+	}
+
+	private void setActionGPBuyerInit() {
+		setActionGPBase();
+		actionGP.add(purchaseItemButton, 0, 2);
+		actionGP.add(makeOfferButton, 1, 2);
+	}
+
+	private void setActionGPInitial() {
 		if(user.getRole().equals("Admin")) {
-			setViewGPAdmin();
+			setActionGPAdminInit();
 		} else if (user.getRole().equals("Seller")) {
-			setViewGPSeller();
+			setActionGPSellerInit();
 		} else if (user.getRole().equals("Buyer")){
-			setViewGPBuyer();
+			setActionGPBuyerInit();
 		} else {
 			System.out.println("Unrecognized user role.");
 		}
 	}
+	
+	// Requested items
+	private void setActionGPAdminRequests() {
+		setActionGPBase();
+		actionGP.add(approveItemButton, 0, 2);
+		actionGP.add(declineItemButton, 1, 2);
+	}
 
-	//	SET ACTION GP (bottom grid pane)
+	private void setActionGPSellerOffers() {
+		setActionGPBase();
+		actionGP.add(acceptOfferButton, 0, 2);
+		actionGP.add(declineOfferButton, 1, 2);
+	}
 
-
+	private void setActionGPBuyerWishlist() {
+		setActionGPBase();
+		actionGP.add(addToWishlistButton, 0, 2);
+		actionGP.add(removeFromWishlistButton, 1, 2);
+	}
+	
 	private void setLayout() {
 		setViewGPInitial();
 		this.setLeft(viewGP);
 
+		setTableGPInitial();
 		this.setRight(tableGP);
 		scroll.setContent(itemTV);
 
+		actionGP.setAlignment(Pos.CENTER);
+		selectedTF.setPrefWidth(50);
+		setActionGPInitial();
 		this.setBottom(actionGP);
 	}
 
@@ -331,6 +398,9 @@ public class HomeView extends BorderPane implements EventHandler<ActionEvent> {
 			initTable();
 			viewWishlist();
 			scroll.setContent(itemTV);
+			
+			// set bottom grid pane
+			setActionGPBuyerWishlist();
 		});
 
 		viewHistoryButton.setOnAction(e -> {
@@ -341,6 +411,8 @@ public class HomeView extends BorderPane implements EventHandler<ActionEvent> {
 			initHistoryTable();
 			viewHistory();
 			scroll.setContent(itemTV);
+			
+			setActionGPBase();
 		});
 
 		viewOfferItemButton.setOnAction(e -> {
@@ -351,6 +423,8 @@ public class HomeView extends BorderPane implements EventHandler<ActionEvent> {
 			initOfferItemTable();
 			viewOfferItem();
 			scroll.setContent(itemTV);
+			
+			setActionGPSellerOffers();
 		});
 
 		uploadItemButton.setOnAction(e -> {
@@ -365,6 +439,8 @@ public class HomeView extends BorderPane implements EventHandler<ActionEvent> {
 			initTable();
 			viewRequestedItem();
 			scroll.setContent(itemTV);
+			
+			setActionGPAdminRequests();
 		});
 
 		viewItemsButton.setOnAction(e -> {
@@ -375,6 +451,8 @@ public class HomeView extends BorderPane implements EventHandler<ActionEvent> {
 			initTable();
 			viewItems();
 			scroll.setContent(itemTV);
+			
+			setActionGPInitial();
 		});
 
 		viewItemsSellerButton.setOnAction(e -> {
@@ -385,6 +463,8 @@ public class HomeView extends BorderPane implements EventHandler<ActionEvent> {
 			initSellerItemsTable();
 			viewSellerItems();
 			scroll.setContent(itemTV);
+			
+			setActionGPInitial();
 		});
 	}
 
