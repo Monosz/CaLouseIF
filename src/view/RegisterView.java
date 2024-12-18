@@ -15,6 +15,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 /**
@@ -77,6 +78,7 @@ public class RegisterView extends BorderPane {
 		registerButton = new Button("Register");
 		loginRedirectLabel = new Label("Already have an account? Sign in");
 		errorLabel = new Label();
+		errorLabel.setTextFill(Color.RED);
 	}
 	
 	private void setGridPaneConstraints() {
