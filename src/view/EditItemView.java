@@ -12,11 +12,9 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 import model.Item;
-import model.User;
 
 public class EditItemView extends BorderPane{
 	private Stage stage;
-	private User user;
 
 	private GridPane formGP, topGP;
 	private Label titleLabel;
@@ -108,7 +106,6 @@ public class EditItemView extends BorderPane{
 
 	public EditItemView(Stage stage, int id) {
 		this.stage = stage;
-		this.user = (User) stage.getUserData();
 		this.item = Item.getItem(id);
 
 		init(); setLayout(); setEvents();
