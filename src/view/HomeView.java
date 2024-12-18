@@ -571,7 +571,6 @@ public class HomeView extends BorderPane {
 		        return;
 		    }
 
-		    // Get the wishlist ID of the selected item
 		    int wishlistId = WishlistController.getWishlistIdForItem(tempItemId, user.getId());
 
 		    if (wishlistId == -1) {
@@ -581,7 +580,7 @@ public class HomeView extends BorderPane {
 
 		    int res = WishlistController.removeWishlist(wishlistId);
 		    if (res > 0) {
-		        viewWishlist();  // Refresh the wishlist view
+		        viewWishlist();  
 		        itemTV.refresh();
 		        errorLabel.setText("Item removed from wishlist.");
 		        reinitializeSelectedItemTF();
@@ -595,21 +594,16 @@ public class HomeView extends BorderPane {
 			if(itemPicked()==0) {
 				return;
 			}
-			
-			int res = WishlistController.addWishlist(user.getId(), tempItemId);
-			if (res > 0) {				
-				viewWishlist();
-				itemTV.refresh();
-		        errorLabel.setText("Item added to wishlist");
+						
+			int res = ItemController.acceptOffer(tempItemId);
+			if (res > 0) {		
+				viewOfferItem();
+		        itemTV.refresh();
 				reinitializeSelectedItemTF();
 			} else {
-		        errorLabel.setText("Failed to add item to wishlist");
+		        errorLabel.setText("Failed to accept offer");
 
 			}
-
-			viewOfferItem();
-			itemTV.refresh();
-			reinitializeSelectedItemTF();
 		});
 
 		declineOfferButton.setOnAction(e -> {
@@ -617,20 +611,7 @@ public class HomeView extends BorderPane {
 				return;
 			}
 			
-			int res = WishlistController.addWishlist(user.getId(), tempItemId);
-			if (res > 0) {				
-				viewWishlist();
-				itemTV.refresh();
-		        errorLabel.setText("Item added to wishlist");
-				reinitializeSelectedItemTF();
-			} else {
-		        errorLabel.setText("Failed to add item to wishlist");
-
-			}
-			
-			viewOfferItem();
-			itemTV.refresh();
-			reinitializeSelectedItemTF();
+		    new DeclineOfferView(stage, tempItemId);
 		});
 
 		approveItemButton.setOnAction(e -> {
@@ -654,18 +635,7 @@ public class HomeView extends BorderPane {
 				return;
 			}
 			
-			int res = WishlistController.addWishlist(user.getId(), tempItemId);
-			if (res > 0) {				
-				viewWishlist();
-				itemTV.refresh();
-		        errorLabel.setText("Item added to wishlist");
-				reinitializeSelectedItemTF();
-			} else {
-		        errorLabel.setText("Failed to add item to wishlist");
-
-			}
-			
-			reinitializeSelectedItemTF();
+		    new DeclineItemView(stage, tempItemId);
 		});
 	}
 	

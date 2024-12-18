@@ -256,12 +256,37 @@ public class Item {
 
 	}
 
-	public static void acceptOffer(int id) {
-		// TODO:
+	public static int acceptOffer(int id) {
+		String query = "UPDATE items SET item_status = ? WHERE item_id = ?";
+		PreparedStatement ps = db.prepareStatement(query);
+
+		int res = 0;
+		try {
+			ps.setString(1, "PURCHASED");
+			ps.setInt(2, id);
+
+			res = ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return res;
 	}
 
-	public static void declineOffer(int id) {
+	public static int declineOffer(int id) {
+		String query = "UPDATE items " + "SET item_offer_status = NULL, item_offerer_id = NULL WHERE item_id = ?";
+		PreparedStatement ps = db.prepareStatement(query);
 
+		int res = 0;
+		try {
+			ps.setInt(1, id);
+
+			res = ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return res;
 	}
 
 	public static int approveItem(int id) {
@@ -431,7 +456,7 @@ public class Item {
 
 	// untuk transactions
 	public static int updateStatusToPurchased(int id) {
-		String query = "UPDATE items SET item_status = ? WHERE item_id = ?";
+		String query = "UPDATE items SET item_offer_status = ? WHERE item_id = ?";
 		PreparedStatement ps = db.prepareStatement(query);
 
 		int res = 0;

@@ -3,6 +3,7 @@ package controller;
 import java.util.List;
 
 import model.Item;
+import model.Transaction;
 
 public class ItemController {
 
@@ -23,7 +24,7 @@ public class ItemController {
 		if(!validation.isEmpty()) {
 			return validation;
 		}
-		
+
 		int res = Item.editItem(id, name, size, Integer.parseInt(price), category);
 		return res == 0 ? "Failed to save changes" : "Changes saved";
 	}
@@ -88,33 +89,35 @@ public class ItemController {
 		if(Integer.parseInt(price)<=0) {
 			return "Price can not be 0 or lower.";
 		}
-		
+
 		Integer offerStatus = Item.getItem(uid).getOfferStatus();
 		System.out.println("offer status" + offerStatus);
 		System.out.println("offer price" + price);
-	    if (offerStatus != null && Integer.parseInt(price) <= offerStatus) {
-	        return "Price cannot be lower than the current offer price.";
-	    }
-	    
-	    int res = Item.offerPrice(id, Integer.parseInt(price), uid);
+		if (offerStatus != null && Integer.parseInt(price) <= offerStatus) {
+			return "Price cannot be lower than the current offer price.";
+		}
+
+		int res = Item.offerPrice(id, Integer.parseInt(price), uid);
 		return res == 0 ? "Failed to offer price" : "Offer placed successfully";
 	}
 
-	public static void acceptOffer(int id) {
-		Item.acceptOffer(id);
+	public static int acceptOffer(int id) {
+		Item item = Item.getItem(id);
+		int uid = item.getOffererId();
+		return Transaction.createTransaction(uid, id);
 	}
 
-	//	public static void declineOffer(int id) {
-	// TODO:
-	//	}
+	public static int declineOffer(int id) {
+		return Item.declineOffer(id);
+	}
 
 	public static int approveItem(int id) {
 		return Item.approveItem(id);
 	}
 
-	//	public static int declineItem(int id) {
-	//		TODO
-	//	}
+	public static int declineItem(int id) {
+		return Item.declineItem(id);
+	}
 
 	public static List<Item> viewAcceptedItem(int id) {
 		return Item.viewAcceptedItem(id);
