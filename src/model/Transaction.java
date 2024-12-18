@@ -8,39 +8,52 @@ import java.util.List;
 
 import database.Database;
 
-/*
-
-CREATE TABLE transactions (
-    transaction_id 	INT	PRIMARY KEY	AUTO_INCREMENT,
-    user_id 		INT NOT NULL,
-    item_id 		INT NOT NULL,
-
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
-    FOREIGN KEY (item_id) REFERENCES items(item_id)
-);
-
-DROP TABLE transactions;
-
+/**
+ * Represents a transaction where a user purchases an item.
+ * <p>
+ * Provides methods for creating transactions and retrieving transaction
+ * history.
+ * <p>
+ * Each transaction is linked to a specific user and item.
+ * </p>
+ * 
+ * @see sql/<a href=
+ *      "https://github.com/Monosz/CaLouseIF/blob/master/sql/initialize.sql#L39">initialize.sql</a>
+ *      for the SQL query used to create the transactions table.
  */
-
 public class Transaction {
+	private int transactionId;
+	private int userId;
+	private int itemId;
+
 	private static Database db = Database.getInstance();
 
-	private int transactionId, userId, itemId;
-
+	/**
+	 * Constructs a new Transaction object.
+	 *
+	 * @param transactionId the unique ID of the transaction
+	 * @param userId        the ID of the user who performed the transaction
+	 * @param itemId        the ID of the item involved in the transaction
+	 */
 	public Transaction(int transactionId, int userId, int itemId) {
 		this.transactionId = transactionId;
 		this.userId = userId;
 		this.itemId = itemId;
 	}
 
-	// ==================================================
-	// =                     LOGIC                      =
-	// ==================================================
+	// ===================================================
+	// ====================== LOGIC ======================
+	// ===================================================
 
+	/**
+	 * Adds a new transaction in the database.
+	 * 
+	 * @param userId the ID of the user making the purchase
+	 * @param itemId the ID of the item being purchased
+	 * @return the number of rows affected (1 if successful, 0 otherwise)
+	 */
 	public static int purchaseItem(int userId, int itemId) {
-		String query = "INSERT INTO transactions(user_id, item_id) "
-				+ "VALUES(?, ?)";
+		String query = "INSERT INTO transactions(user_id, item_id) VALUES(?, ?)";
 		PreparedStatement ps = db.prepareStatement(query);
 
 		int res = 0;
@@ -56,9 +69,15 @@ public class Transaction {
 		return res;
 	}
 
+	/**
+	 * Retrieves the transaction history for a specific user.
+	 * 
+	 * @param userId the ID of the user whose transaction history is to be retrieved
+	 * @return a list of {@code Transaction} objects representing the user's
+	 *         transaction history
+	 */
 	public static List<Transaction> viewHistory(int userId) {
-		String query = "SELECT * FROM transactions "
-				+ "WHERE user_id = ?";
+		String query = "SELECT * FROM transactions WHERE user_id = ?";
 		PreparedStatement ps = db.prepareStatement(query);
 
 		List<Transaction> list = new ArrayList<>();
@@ -67,9 +86,7 @@ public class Transaction {
 			ResultSet rs = ps.executeQuery();
 
 			while (rs.next()) {
-				int tId = rs.getInt("transaction_id"),
-						uId = rs.getInt("user_id"),
-						iId = rs.getInt("item_id");
+				int tId = rs.getInt("transaction_id"), uId = rs.getInt("user_id"), iId = rs.getInt("item_id");
 
 				list.add(new Transaction(tId, uId, iId));
 			}
@@ -80,9 +97,15 @@ public class Transaction {
 		return list;
 	}
 
+	/**
+	 * Adds a new transaction in the database.
+	 * 
+	 * @param userId the ID of the user making the purchase
+	 * @param itemId the ID of the item being purchased
+	 * @return the number of rows affected (1 if successful, 0 otherwise)
+	 */
 	public static int createTransaction(int userId, int itemId) {
-		String query = "INSERT INTO transactions(user_id, item_id) "
-				+ "VALUES(?, ?)";
+		String query = "INSERT INTO transactions(user_id, item_id) VALUES(?, ?)";
 		PreparedStatement ps = db.prepareStatement(query);
 
 		int res = 0;
@@ -98,9 +121,9 @@ public class Transaction {
 		return res;
 	}
 
-	// ==================================================
-	// =                 GETTER-SETTER                  =
-	// ==================================================
+	// ===================================================
+	// ================== GETTER-SETTER ==================
+	// ===================================================
 
 	public int getTransactionId() {
 		return transactionId;
@@ -125,5 +148,4 @@ public class Transaction {
 	public void setItemId(int itemId) {
 		this.itemId = itemId;
 	}
-
 }
