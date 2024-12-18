@@ -394,7 +394,7 @@ public class HomeView extends BorderPane {
 	}
 
 	private void setActionGPBuyerWishlist() {
-		setActionGPBase();
+		setActionGPBase();  
 		actionGP.add(removeFromWishlistButton, 1, 2);
 	}
 
@@ -567,18 +567,44 @@ public class HomeView extends BorderPane {
 		});
 
 		removeFromWishlistButton.setOnAction(e -> {
-			if(itemPicked()==0) {
-				return;
-			}
-			
-			viewWishlist();
-	        itemTV.refresh();
-	        reinitializeSelectedItemTF();
+		    if(itemPicked() == 0) {
+		        return;
+		    }
+
+		    // Get the wishlist ID of the selected item
+		    int wishlistId = WishlistController.getWishlistIdForItem(tempItemId, user.getId());
+
+		    if (wishlistId == -1) {
+		        errorLabel.setText("Item not found in wishlist.");
+		        return;
+		    }
+
+		    int res = WishlistController.removeWishlist(wishlistId);
+		    if (res > 0) {
+		        viewWishlist();  // Refresh the wishlist view
+		        itemTV.refresh();
+		        errorLabel.setText("Item removed from wishlist.");
+		        reinitializeSelectedItemTF();
+		    } else {
+		        errorLabel.setText("Failed to remove item from wishlist.");
+		    }
 		});
+
 
 		acceptOfferButton.setOnAction(e -> {
 			if(itemPicked()==0) {
 				return;
+			}
+			
+			int res = WishlistController.addWishlist(user.getId(), tempItemId);
+			if (res > 0) {				
+				viewWishlist();
+				itemTV.refresh();
+		        errorLabel.setText("Item added to wishlist");
+				reinitializeSelectedItemTF();
+			} else {
+		        errorLabel.setText("Failed to add item to wishlist");
+
 			}
 
 			viewOfferItem();
@@ -591,6 +617,17 @@ public class HomeView extends BorderPane {
 				return;
 			}
 			
+			int res = WishlistController.addWishlist(user.getId(), tempItemId);
+			if (res > 0) {				
+				viewWishlist();
+				itemTV.refresh();
+		        errorLabel.setText("Item added to wishlist");
+				reinitializeSelectedItemTF();
+			} else {
+		        errorLabel.setText("Failed to add item to wishlist");
+
+			}
+			
 			viewOfferItem();
 			itemTV.refresh();
 			reinitializeSelectedItemTF();
@@ -600,7 +637,7 @@ public class HomeView extends BorderPane {
 			if(itemPicked()==0) {
 				return;
 			}
-			
+				
 		    int res = ItemController.approveItem(tempItemId);
 		    if (res > 0) {
 		        viewRequestedItem();
@@ -615,6 +652,17 @@ public class HomeView extends BorderPane {
 		declineItemButton.setOnAction(e -> {
 			if(itemPicked()==0) {
 				return;
+			}
+			
+			int res = WishlistController.addWishlist(user.getId(), tempItemId);
+			if (res > 0) {				
+				viewWishlist();
+				itemTV.refresh();
+		        errorLabel.setText("Item added to wishlist");
+				reinitializeSelectedItemTF();
+			} else {
+		        errorLabel.setText("Failed to add item to wishlist");
+
 			}
 			
 			reinitializeSelectedItemTF();

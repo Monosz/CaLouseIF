@@ -48,4 +48,8 @@ public class WishlistController {
 	public static int removeWishlist(int wishlistId) {
 		return Wishlist.removeWishlist(wishlistId);
 	}
+	
+	public static int getWishlistIdForItem(int itemId, int userId) {
+        return Wishlist.getWishlistIdForItem(itemId, userId);
+    }
 }

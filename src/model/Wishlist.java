@@ -104,7 +104,7 @@ public class Wishlist {
 	 * @return the number of rows affected (1 if successful, 0 otherwise)
 	 */
 	public static int removeWishlist(int wishlistId) {
-		String query = "DELETE FROM wishlists" + "WHERE wishlist_id = ?";
+		String query = "DELETE FROM wishlists " + "WHERE wishlist_id = ?";
 		PreparedStatement ps = db.prepareStatement(query);
 
 		int res = 0;
@@ -118,7 +118,22 @@ public class Wishlist {
 
 		return res;
 	}
-
+	public static int getWishlistIdForItem(int itemId, int userId) {
+		String query = "SELECT wishlist_id FROM wishlists WHERE item_id = ? AND user_id = ?";
+		PreparedStatement ps = db.prepareStatement(query);
+		int wishlistId = -1;
+		try {
+			ps.setInt(1, itemId);
+			ps.setInt(2, userId);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				wishlistId = rs.getInt("wishlist_id");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return wishlistId;
+	}
 	// ===================================================
 	// ================== GETTER-SETTER ==================
 	// ===================================================
