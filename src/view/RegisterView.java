@@ -17,6 +17,21 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
+/**
+ * Represents the registration view of the application built with JavaFX.
+ * <p>
+ * This view allows users to register by providing their name, password, phone
+ * number, address, and selecting a role (Buyer or Seller). The form is
+ * submitted via the {@link UserController}.
+ * <p>
+ * Layout is managed using {@link BorderPane}, with input fields and buttons
+ * organized in a {@link GridPane}. Success or error messages are displayed
+ * dynamically based on user input.
+ * </p>
+ * 
+ * @see UserController
+ * @see LoginView
+ */
 public class RegisterView extends BorderPane {
 	private Stage stage;
 	private GridPane gp;
@@ -31,12 +46,16 @@ public class RegisterView extends BorderPane {
 	private Button registerButton;
 	private Label loginRedirectLabel, errorLabel;
 
+	/**
+	 * Initializes the UI components for the register view, including labels, text
+	 * fields, radio buttons, buttons, and error messages.
+	 */
 	private void init() {
 		gp = new GridPane();
 		fp = new FlowPane(Orientation.HORIZONTAL);
 
 		titleLabel = new Label("Register");
-		
+
 		nameLabel = new Label("Name:");
 		passwordLabel = new Label("Password:");
 		phoneLabel = new Label("Phone Number:");
@@ -69,13 +88,20 @@ public class RegisterView extends BorderPane {
 	    gp.getColumnConstraints().addAll(labelColumn, inputColumn);
 	}
 
+	/**
+	 * Sets the layout of the register view.
+	 * <p>
+	 * Organizes all UI components within a {@link GridPane} and aligns them
+	 * appropriately.
+	 * </p>
+	 */
 	private void setLayout() {
 		setGridPaneConstraints();
 		titleLabel.setAlignment(Pos.CENTER);
-		
+
 		loginRedirectLabel.setWrapText(true);
 		errorLabel.setWrapText(true);
-		
+
 		gp.add(nameLabel, 0, 0);
 		gp.add(nameTextField, 1, 0);
 
@@ -95,24 +121,34 @@ public class RegisterView extends BorderPane {
 		
 		gp.add(registerButton, 0, 5);
 		gp.add(errorLabel, 1, 5);
-		
-		gp.add(loginRedirectLabel, 1, 6);
-		
+
+		gp.add(loginRedirectLabel, 0, 6);
+
 		gp.setAlignment(Pos.BASELINE_CENTER);
 		this.setTop(titleLabel);
 		this.setCenter(gp);
 	}
 
+	/**
+	 * Configures event handlers for the {@code RegisterView}.
+	 * <p>
+	 * Includes actions for the registration button and login redirection link,
+	 * which switches to the {@link LoginView}.
+	 * </p>
+	 */
 	private void setEvents() {
 		registerButton.setOnAction(e -> {
-			String name = nameTextField.getText().strip(),
-					password = passwordField.getText().strip(),
-					phone = phoneTextField.getText().strip(),
-					address = addressTextField.getText().strip(),
-					role = (roleToggleGroup.getSelectedToggle() != null) ? ((Labeled) roleToggleGroup.getSelectedToggle()).getText() : "",
-							message = UserController.register(name, password, phone, address, role);
+			String name = nameTextField.getText().strip();
+			String password = passwordField.getText().strip();
+			String phone = phoneTextField.getText().strip();
+			String address = addressTextField.getText().strip();
+			String role = (roleToggleGroup.getSelectedToggle() != null)
+					? ((Labeled) roleToggleGroup.getSelectedToggle()).getText()
+					: "";
+			String message = UserController.register(name, password, phone, address, role);
+
 			if (message.equals("Register success")) {
-				new LoginView(stage);				
+				new LoginView(stage);
 			} else {
 				errorLabel.setText(message);
 			}
@@ -123,13 +159,20 @@ public class RegisterView extends BorderPane {
 		});
 	}
 
+	/**
+	 * Constructs a new {@code RegisterView}. Initializes the stage, sets up the
+	 * layout, and configures event handlers.
+	 *
+	 * @param stage the primary stage for displaying the registration view
+	 */
 	public RegisterView(Stage stage) {
 		this.stage = stage;
-		init(); setLayout(); setEvents();
+		init();
+		setLayout();
+		setEvents();
 
 		Scene scene = new Scene(this, 500, 200);
 		stage.setScene(scene);
 		stage.show();
 	}
-
 }

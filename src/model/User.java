@@ -6,32 +6,36 @@ import java.sql.SQLException;
 
 import database.Database;
 
-/*
-
-CREATE TABLE users (
-	user_id 		INT 			PRIMARY KEY AUTO_INCREMENT,
-	user_name 		VARCHAR(50) 	UNIQUE 		NOT NULL,
-	user_password 	VARCHAR(50) 	NOT NULL,
-	user_phone 		VARCHAR(15) 	NOT NULL,
-	user_address 	VARCHAR(255)	NOT NULL,
-	user_role 		VARCHAR(10) 	NOT NULL
-);
-
-INSERT INTO users(user_name, user_password, user_phone, user_address, user_role)
-VALUES
-	("Dummy Buyer", "@buyer123", "+62987654321", "124 Conch Street", "Buyer"),
-	("Dummy Seller", "@seller123", "+62123456789", "123 Sesame Street", "Seller");
-
-DROP TABLE users;
-
+/**
+ * Represents a user in the system.
+ * <p>
+ * Provides functionality for user registration and login.
+ * </p>
+ * 
+ * @see sql/<a href=
+ *      "https://github.com/Monosz/CaLouseIF/blob/master/sql/initialize.sql#L4">initialize.sql</a>
+ *      for the SQL query used to create the users table
  */
-
 public class User {
-	private static Database db = Database.getInstance();
-
 	private int id;
-	private String name, password, phone, address, role;
+	private String name;
+	private String password;
+	private String phone;
+	private String address;
+	private String role;
 
+	private static final Database db = Database.getInstance();
+
+	/**
+	 * Constructs a new User object.
+	 *
+	 * @param id       the user's unique identifier
+	 * @param name     the user's name
+	 * @param password the user's password
+	 * @param phone    the user's phone number
+	 * @param address  the user's address
+	 * @param role     the user's role (e.g., "Buyer", "Seller", "Admin")
+	 */
 	public User(int id, String name, String password, String phone, String address, String role) {
 		this.id = id;
 		this.name = name;
@@ -41,15 +45,24 @@ public class User {
 		this.role = role;
 	}
 
-	// ==================================================
-	// =                     LOGIC                      =
-	// ==================================================
+	// ===================================================
+	// ====================== LOGIC ======================
+	// ===================================================
 
+	/**
+	 * Registers a new user in the system.
+	 *
+	 * @param name     the user's name
+	 * @param password the user's password
+	 * @param phone    the user's phone number
+	 * @param address  the user's address
+	 * @param role     the user's role
+	 * @return 1 if registration is successful, -1 if name already exists, or 0 if
+	 *         the database operation fails
+	 */
 	public static int register(String name, String password, String phone, String address, String role) {
-		int validation = checkAccountValidation(name, password, phone, address);
-
-		if(validation<0) {
-			return validation;
+		if (!isUsernameUnique(name)) {
+			return -1;
 		}
 
 		String query = "INSERT INTO users(user_name, user_password, user_phone, user_address, user_role) "
@@ -72,15 +85,12 @@ public class User {
 		return res;
 	}
 
-	private static int checkAccountValidation(String name, String password, String phone, String address) {
-		//		name validation (must be unique)
-		if (!isUsernameUnique(name)) {
-			return -1;
-		}
-
-		return 1;
-	}
-
+	/**
+	 * Checks whether a username is unique in the database.
+	 *
+	 * @param name the username to check
+	 * @return {@code true} if the username is unique, {@code false} otherwise
+	 */
 	private static boolean isUsernameUnique(String name) {
 		String query = "SELECT * FROM users WHERE user_name = ?";
 		PreparedStatement ps = db.prepareStatement(query);
@@ -93,17 +103,23 @@ public class User {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return true; 
+		return true;
 	}
 
+	/**
+	 * Authenticates a user with the provided username and password.
+	 *
+	 * @param name     the user's username
+	 * @param password the user's password
+	 * @return a {@link User} object if authentication is successful, or {@code null} if it
+	 *         fails
+	 */
 	public static User login(String name, String password) {
 		if (name.equals("admin") && password.equals("admin")) {
 			return new User(0, "admin", "admin", null, null, "Admin");
 		}
 
-		String query = "SELECT * FROM users "
-				+ "WHERE user_name = ? "
-				+ "AND user_password = ?";
+		String query = "SELECT * FROM users " + "WHERE user_name = ? " + "AND user_password = ?";
 		PreparedStatement ps = db.prepareStatement(query);
 
 		User user = null;
@@ -117,8 +133,7 @@ public class User {
 				int id = rs.getInt("user_id");
 				name = rs.getString("user_name");
 				password = rs.getString("user_password");
-				String phone = rs.getString("user_phone"),
-						address = rs.getString("user_address"),
+				String phone = rs.getString("user_phone"), address = rs.getString("user_address"),
 						role = rs.getString("user_role");
 
 				user = new User(id, name, password, phone, address, role);
@@ -130,10 +145,9 @@ public class User {
 		return user;
 	}
 
-
-	// ==================================================
-	// =                 GETTER-SETTER                  =
-	// ==================================================
+	// ===================================================
+	// ================== GETTER-SETTER ==================
+	// ===================================================
 
 	public int getId() {
 		return id;
@@ -182,5 +196,4 @@ public class User {
 	public void setRole(String role) {
 		this.role = role;
 	}
-
 }
