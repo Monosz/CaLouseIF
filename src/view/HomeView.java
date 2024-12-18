@@ -414,7 +414,6 @@ public class HomeView extends BorderPane {
 	private void setEvents() {
 		logOutButton.setOnAction(e -> {
 			stage.setUserData(null);
-			reinitializeSelectedItemTF();
 			new LoginView(stage);
 		});
 
@@ -461,7 +460,6 @@ public class HomeView extends BorderPane {
 		});
 
 		uploadItemButton.setOnAction(e -> {
-			reinitializeSelectedItemTF();
 			new UploadItemView(stage);
 		});
 
@@ -512,12 +510,10 @@ public class HomeView extends BorderPane {
 		});
 
 		makeOfferButton.setOnAction(e -> {
-			reinitializeSelectedItemTF();
 		    new MakeOfferView(stage, tempItemId);
 		});
 
 		editItemButton.setOnAction(e -> {
-			reinitializeSelectedItemTF();
 		    new EditItemView(stage, tempItemId);
 		});
 
