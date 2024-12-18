@@ -456,7 +456,7 @@ public class Item {
 
 	// untuk transactions
 	public static int updateStatusToPurchased(int id) {
-		String query = "UPDATE items SET item_status = ? WHERE item_id = ?";
+		String query = "UPDATE items SET item_status = ?, item_offer_status = NULL, item_offerer_id = NULL WHERE item_id = ?";
 		PreparedStatement ps = db.prepareStatement(query);
 
 		int res = 0;
