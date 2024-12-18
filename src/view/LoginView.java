@@ -9,6 +9,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.User;
 
@@ -58,6 +59,7 @@ public class LoginView extends BorderPane {
 		loginButton = new Button("Login");
 		registerRedirectLabel = new Label("Don't have an account? Register");
 		errorLabel = new Label();
+		errorLabel.setTextFill(Color.RED);
 	}
 
 	/**
