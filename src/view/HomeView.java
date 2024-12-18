@@ -56,8 +56,8 @@ public class HomeView extends BorderPane {
 	private GridPane actionGP;
 	private Label selectedLabel, errorLabel;
 	private TextField selectedItemTF; // item id
-	private Button purchaseItemButton, makeOfferButton; // buyer
-	private Button addToWishlistButton, removeFromWishlistButton; // buyer
+	private Button purchaseItemButton, makeOfferButton, addToWishlistButton; // buyer
+	private Button removeFromWishlistButton; // buyer
 	private Button editItemButton, deleteItemButton; // seller
 	private Button acceptOfferButton, declineOfferButton; // seller
 	private Button approveItemButton, declineItemButton;// admin
@@ -347,6 +347,8 @@ public class HomeView extends BorderPane {
 		actionGP.add(selectedLabel, 0, 0);
 		actionGP.add(selectedItemTF, 1, 0); 
 		actionGP.add(errorLabel, 0, 1, 2, 1);
+		
+		errorLabel.setText("");
 	}
 
 	private void setActionGPAdminInit() {
@@ -363,6 +365,7 @@ public class HomeView extends BorderPane {
 		setActionGPBase();
 		actionGP.add(purchaseItemButton, 0, 2);
 		actionGP.add(makeOfferButton, 1, 2);
+		actionGP.add(addToWishlistButton, 2, 2);
 	}
 
 	private void setActionGPInitial() {
@@ -392,7 +395,6 @@ public class HomeView extends BorderPane {
 
 	private void setActionGPBuyerWishlist() {
 		setActionGPBase();
-		actionGP.add(addToWishlistButton, 0, 2);
 		actionGP.add(removeFromWishlistButton, 1, 2);
 	}
 
@@ -502,7 +504,13 @@ public class HomeView extends BorderPane {
 			reinitializeSelectedItemTF();
 		});
 		
+		// ACTIONS
+		
 		purchaseItemButton.setOnAction(e -> {
+			if(itemPicked()==0) {
+				return;
+			}
+			
 			purchaseItem(user.getId(), tempItemId);
 			viewItems();
 	        itemTV.refresh();
@@ -510,14 +518,26 @@ public class HomeView extends BorderPane {
 		});
 
 		makeOfferButton.setOnAction(e -> {
+			if(itemPicked()==0) {
+				return;
+			}
+			
 		    new MakeOfferView(stage, tempItemId);
 		});
 
 		editItemButton.setOnAction(e -> {
+			if(itemPicked()==0) {
+				return;
+			}
+			
 		    new EditItemView(stage, tempItemId);
 		});
 
 		deleteItemButton.setOnAction(e -> {
+			if(itemPicked()==0) {
+				return;
+			}
+			
 		    int res = ItemController.deleteItem(tempItemId);
 		    if (res > 0) {
 		        viewSellerItems();
@@ -530,35 +550,57 @@ public class HomeView extends BorderPane {
 		});
 
 		addToWishlistButton.setOnAction(e -> {
-		    // Add code to add item to wishlist here
-			viewWishlist();
-	        itemTV.refresh();
-	        reinitializeSelectedItemTF();
+			if(itemPicked()==0) {
+				return;
+			}
+			
+			int res = WishlistController.addWishlist(user.getId(), tempItemId);
+			if (res > 0) {				
+				viewWishlist();
+				itemTV.refresh();
+		        errorLabel.setText("Item added to wishlist");
+				reinitializeSelectedItemTF();
+			} else {
+		        errorLabel.setText("Failed to add item to wishlist");
+
+			}
 		});
 
 		removeFromWishlistButton.setOnAction(e -> {
-		    // Add code to remove item from wishlist here
+			if(itemPicked()==0) {
+				return;
+			}
+			
 			viewWishlist();
 	        itemTV.refresh();
 	        reinitializeSelectedItemTF();
 		});
 
 		acceptOfferButton.setOnAction(e -> {
-		    // Add code for accepting an offer here
+			if(itemPicked()==0) {
+				return;
+			}
+
 			viewOfferItem();
 			itemTV.refresh();
 			reinitializeSelectedItemTF();
 		});
 
 		declineOfferButton.setOnAction(e -> {
-		    // Add code for declining an offer here
+			if(itemPicked()==0) {
+				return;
+			}
+			
 			viewOfferItem();
 			itemTV.refresh();
 			reinitializeSelectedItemTF();
 		});
 
 		approveItemButton.setOnAction(e -> {
-			reinitializeSelectedItemTF();
+			if(itemPicked()==0) {
+				return;
+			}
+			
 		    int res = ItemController.approveItem(tempItemId);
 		    if (res > 0) {
 		        viewRequestedItem();
@@ -571,9 +613,21 @@ public class HomeView extends BorderPane {
 		});
 
 		declineItemButton.setOnAction(e -> {
-		    // Add code for declining item here
+			if(itemPicked()==0) {
+				return;
+			}
+			
 			reinitializeSelectedItemTF();
 		});
+	}
+	
+	private int itemPicked() {
+		if(tempItemId==0 && selectedItemTF.getText().isBlank()) {
+			errorLabel.setText("Please select an item");
+			return 0;
+		} else {
+			return 1;
+		}
 	}
 	
 	private void reinitializeSelectedItemTF() {
