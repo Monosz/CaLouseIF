@@ -14,6 +14,10 @@ import database.Database;
  * Provides methods to view, add, and remove items from a wishlist stored in the
  * database.
  * </p>
+ * 
+ * @see sql/<a href=
+ *      "https://github.com/Monosz/CaLouseIF/blob/master/sql/initialize.sql#L30">initialize.sql</a>
+ *      for the SQL query used to create the wishlists table
  */
 public class Wishlist {
 	private int wishlistId;
