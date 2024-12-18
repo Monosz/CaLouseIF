@@ -237,7 +237,7 @@ public class Item {
 	}
 
 	public static int offerPrice(int id, int price, int uid) {
-		String query = "UPDATE items SET item_offer_status = ?, item_offerer_id = ?"
+		String query = "UPDATE items SET item_offer_status = ?, item_offerer_id = ? "
 				+ "WHERE item_id = ?";
 		PreparedStatement ps = db.prepareStatement(query);
 

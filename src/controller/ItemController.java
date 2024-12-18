@@ -90,12 +90,14 @@ public class ItemController {
 		}
 		
 		Integer offerStatus = Item.getItem(uid).getOfferStatus();
-	    if (offerStatus != null && Integer.parseInt(price) < offerStatus) {
+		System.out.println("offer status" + offerStatus);
+		System.out.println("offer price" + price);
+	    if (offerStatus != null && Integer.parseInt(price) <= offerStatus) {
 	        return "Price cannot be lower than the current offer price.";
 	    }
 	    
-	    Item.offerPrice(id, Integer.parseInt(price), uid);
-	    return "Offer placed successfully";
+	    int res = Item.offerPrice(id, Integer.parseInt(price), uid);
+		return res == 0 ? "Failed to offer price" : "Offer placed successfully";
 	}
 
 	public static void acceptOffer(int id) {

@@ -1,6 +1,7 @@
 package view;
 
 import controller.UserController;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -11,6 +12,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
@@ -31,7 +33,7 @@ public class RegisterView extends BorderPane {
 
 	private void init() {
 		gp = new GridPane();
-		fp = new FlowPane();
+		fp = new FlowPane(Orientation.HORIZONTAL);
 
 		titleLabel = new Label("Register");
 		
@@ -57,9 +59,18 @@ public class RegisterView extends BorderPane {
 		loginRedirectLabel = new Label("Already have an account? Sign in");
 		errorLabel = new Label();
 	}
+	
+	private void setGridPaneConstraints() {
+	    ColumnConstraints labelColumn = new ColumnConstraints();
+	    labelColumn.setPercentWidth(40); 
+	    ColumnConstraints inputColumn = new ColumnConstraints();
+	    inputColumn.setPercentWidth(60); 
+
+	    gp.getColumnConstraints().addAll(labelColumn, inputColumn);
+	}
 
 	private void setLayout() {
-		titleLabel.setMaxWidth(Double.MAX_VALUE);
+		setGridPaneConstraints();
 		titleLabel.setAlignment(Pos.CENTER);
 		
 		loginRedirectLabel.setWrapText(true);
@@ -79,13 +90,13 @@ public class RegisterView extends BorderPane {
 
 		gp.add(roleLabel, 0, 4);
 		fp.getChildren().addAll(buyerRadioButton, sellerRadioButton);
-		fp.setPrefWrapLength(200);
 		gp.add(fp, 1, 4);
 
+		
 		gp.add(registerButton, 0, 5);
 		gp.add(errorLabel, 1, 5);
-
-		gp.add(loginRedirectLabel, 0, 6);
+		
+		gp.add(loginRedirectLabel, 1, 6);
 		
 		gp.setAlignment(Pos.BASELINE_CENTER);
 		this.setTop(titleLabel);
@@ -116,7 +127,7 @@ public class RegisterView extends BorderPane {
 		this.stage = stage;
 		init(); setLayout(); setEvents();
 
-		Scene scene = new Scene(this, 400, 200);
+		Scene scene = new Scene(this, 500, 200);
 		stage.setScene(scene);
 		stage.show();
 	}

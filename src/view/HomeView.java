@@ -56,12 +56,12 @@ public class HomeView extends BorderPane {
 	private GridPane actionGP;
 	private Label selectedLabel, errorLabel;
 	private TextField selectedItemTF; // item id
-	private int tempItemId;
 	private Button purchaseItemButton, makeOfferButton; // buyer
 	private Button addToWishlistButton, removeFromWishlistButton; // buyer
 	private Button editItemButton, deleteItemButton; // seller
 	private Button acceptOfferButton, declineOfferButton; // seller
 	private Button approveItemButton, declineItemButton;// admin
+	private int tempItemId;
 
 	private Button logOutButton;
 

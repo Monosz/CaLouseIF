@@ -11,39 +11,51 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
+import model.Item;
 import model.User;
 
 public class MakeOfferView extends BorderPane{
 	private Stage stage;
 	private User user;
+	private Item item;
 
 	private GridPane formGP, topGP;
 	private Label titleLabel;
-	private Label nameLabel, categoryLabel, sizeLabel, priceLabel;
-	private TextField nameTextField, categoryTextField, sizeTextField, priceTextField;
-	private Button uploadItemButton, backButton;
+	private Label nameLabel, priceLabel, priceValueLabel, currentOfferLabel, currentOfferValueLabel, newOfferLabel;
+	private TextField newOfferTF;
+	private Button submitOfferButton, backButton;
 	private Label errorLabel;
 	
-	private int itemId;
 
 	private void init() {
 		backButton = new Button("Go back to home page");
 
 		topGP = new GridPane();
-		titleLabel = new Label("Upload Item");
+		titleLabel = new Label("Make Offer");
 		
 		formGP = new GridPane();
-		nameLabel = new Label("Name:");
-		categoryLabel = new Label("Category:");
-		sizeLabel = new Label("Size:");
-		priceLabel = new Label("Price:");
+		
+		nameLabel = new Label();
+		nameLabel.setText(item.getName());
+		
+		priceLabel = new Label("Current price: ");
+		priceValueLabel = new Label();
+		Integer temp = item.getPrice();
+		String value = temp.toString();
+		priceValueLabel.setText(value);
+		
+		
+		currentOfferLabel = new Label("Current offer: ");
+		
+		currentOfferValueLabel = new Label();
+		temp = item.getOfferStatus();
+		value = temp == 0 ? "No offers yet" : temp.toString();
+		currentOfferValueLabel.setText(value);
+		
+		newOfferLabel = new Label("Your Offer:");
+		newOfferTF = new TextField();
 
-		nameTextField = new TextField();
-		categoryTextField = new TextField();
-		sizeTextField = new TextField();
-		priceTextField = new TextField();
-
-		uploadItemButton = new Button("Upload Item");
+		submitOfferButton = new Button("Submit Offer");
 		errorLabel = new Label();
 		errorLabel.setWrapText(true);
 	}
@@ -59,22 +71,22 @@ public class MakeOfferView extends BorderPane{
 		
 		errorLabel.setWrapText(true);
 
-		formGP.add(nameLabel, 0, 0);
-		formGP.add(nameTextField, 1, 0);
+		formGP.add(nameLabel, 0, 0, 2, 1);
 
-		formGP.add(categoryLabel, 0, 1);
-		formGP.add(categoryTextField, 1, 1);
+		formGP.add(priceLabel, 0, 1);
+		formGP.add(priceValueLabel, 1, 1);
+		
+		formGP.add(currentOfferLabel, 0, 2);
+		formGP.add(currentOfferValueLabel, 1, 2);
 
-		formGP.add(sizeLabel, 0, 2);
-		formGP.add(sizeTextField, 1, 2);
+		formGP.add(newOfferLabel, 0, 3);
+		formGP.add(newOfferTF, 1, 3);
 
-		formGP.add(priceLabel, 0, 3);
-		formGP.add(priceTextField, 1, 3);
+		formGP.add(errorLabel, 1, 4);
 
-		formGP.add(uploadItemButton, 0, 6, 2, 1);
-		GridPane.setHalignment(uploadItemButton, HPos.CENTER);
+		formGP.add(submitOfferButton, 0, 5, 2, 1);
+		GridPane.setHalignment(submitOfferButton, HPos.CENTER);
 
-		formGP.add(errorLabel, 1, 5);
 
 		formGP.setAlignment(Pos.BASELINE_CENTER);
 		this.setTop(topGP);
@@ -86,14 +98,11 @@ public class MakeOfferView extends BorderPane{
 			new HomeView(stage);
 		});
 
-		uploadItemButton.setOnMouseClicked(e -> {
-			String name = nameTextField.getText().strip(),
-					category = categoryTextField.getText().strip(),
-					size = sizeTextField.getText().strip(),
-					price= priceTextField.getText().strip(),
-					message = ItemController.uploadItem(name, size, price, category, user.getId());
-			if (message.equals("Register success")) {
-				new LoginView(stage);				
+		submitOfferButton.setOnMouseClicked(e -> {
+			String offer = newOfferTF.getText();  
+			String message = ItemController.offerPrice(item.getId(), offer, user.getId());
+			if (message.equals("Offer placed successfully")) {
+				new HomeView(stage);				
 			} else {
 				errorLabel.setText(message);
 			}
@@ -103,7 +112,7 @@ public class MakeOfferView extends BorderPane{
 	public MakeOfferView(Stage stage, int id) {
 		this.stage = stage;
 		this.user = (User) stage.getUserData();
-		this.itemId = id;
+		this.item = Item.getItem(id);
 		
 		init(); setLayout(); setEvents();
 
