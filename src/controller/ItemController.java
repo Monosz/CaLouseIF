@@ -93,7 +93,7 @@ public class ItemController {
 		Integer offerStatus = Item.getItem(uid).getOfferStatus();
 		System.out.println("offer status" + offerStatus);
 		System.out.println("offer price" + price);
-		if (offerStatus != null && Integer.parseInt(price) <= offerStatus) {
+		if (Integer.parseInt(price) <= offerStatus) {
 			return "Price cannot be lower than the current offer price.";
 		}
 

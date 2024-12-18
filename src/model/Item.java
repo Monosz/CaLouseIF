@@ -456,7 +456,7 @@ public class Item {
 
 	// untuk transactions
 	public static int updateStatusToPurchased(int id) {
-		String query = "UPDATE items SET item_offer_status = ? WHERE item_id = ?";
+		String query = "UPDATE items SET item_status = ? WHERE item_id = ?";
 		PreparedStatement ps = db.prepareStatement(query);
 
 		int res = 0;
@@ -484,6 +484,37 @@ public class Item {
 		}
 
 		return res;
+	}
+	
+	public static int isOfferNull(int id) {
+//		String query = "SELECT * FROM items WHERE item_id = ?";
+//		PreparedStatement ps = db.prepareStatement(query);
+//
+//		Item item = null;
+//		try {
+//			ps.setInt(1, id);
+//			ResultSet rs = ps.executeQuery();
+//
+//			while (rs.next()) {
+//				int iId = rs.getInt("item_id"), 
+//						iPrice = rs.getInt("item_price"),
+//						iOfferStatus = rs.getInt("item_offer_status"), 
+//						iWishlist = rs.getInt("item_wishlist"), 
+//						iOffererId = rs.getInt("item_offerer_id"), 
+//						iSellerId = rs.getInt("item_seller_id");
+//				String iName = rs.getString("item_name"), 
+//						iSize = rs.getString("item_size"),
+//						iCategory = rs.getString("item_category"), 
+//						iStatus = rs.getString("item_status");
+//
+//				item = new Item(iId, iName, iSize, iPrice, iCategory, iStatus, iWishlist, iOfferStatus, iOffererId, iSellerId);
+//			}
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//
+//		return item;
+		return 0;
 	}
 
 	// ==================================================
