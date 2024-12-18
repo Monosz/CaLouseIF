@@ -414,6 +414,7 @@ public class HomeView extends BorderPane {
 	private void setEvents() {
 		logOutButton.setOnAction(e -> {
 			stage.setUserData(null);
+			reinitializeSelectedItemTF();
 			new LoginView(stage);
 		});
 
@@ -430,6 +431,7 @@ public class HomeView extends BorderPane {
 
 			// set bottom grid pane
 			setActionGPBuyerWishlist();
+			reinitializeSelectedItemTF();
 		});
 
 		viewHistoryButton.setOnAction(e -> {
@@ -442,6 +444,7 @@ public class HomeView extends BorderPane {
 			scroll.setContent(itemTV);
 
 			setActionGPBase();
+			reinitializeSelectedItemTF();
 		});
 
 		viewOfferItemButton.setOnAction(e -> {
@@ -454,9 +457,11 @@ public class HomeView extends BorderPane {
 			scroll.setContent(itemTV);
 
 			setActionGPSellerOffers();
+			reinitializeSelectedItemTF();
 		});
 
 		uploadItemButton.setOnAction(e -> {
+			reinitializeSelectedItemTF();
 			new UploadItemView(stage);
 		});
 
@@ -470,6 +475,7 @@ public class HomeView extends BorderPane {
 			scroll.setContent(itemTV);
 
 			setActionGPAdminRequests();
+			reinitializeSelectedItemTF();
 		});
 
 		viewItemsButton.setOnAction(e -> {
@@ -482,6 +488,7 @@ public class HomeView extends BorderPane {
 			scroll.setContent(itemTV);
 
 			setActionGPInitial();
+			reinitializeSelectedItemTF();
 		});
 
 		viewItemsSellerButton.setOnAction(e -> {
@@ -494,19 +501,23 @@ public class HomeView extends BorderPane {
 			scroll.setContent(itemTV);
 
 			setActionGPInitial();
+			reinitializeSelectedItemTF();
 		});
 		
 		purchaseItemButton.setOnAction(e -> {
 			purchaseItem(user.getId(), tempItemId);
 			viewItems();
 	        itemTV.refresh();
+	        reinitializeSelectedItemTF();
 		});
 
 		makeOfferButton.setOnAction(e -> {
+			reinitializeSelectedItemTF();
 		    new MakeOfferView(stage, tempItemId);
 		});
 
 		editItemButton.setOnAction(e -> {
+			reinitializeSelectedItemTF();
 		    new EditItemView(stage, tempItemId);
 		});
 
@@ -516,6 +527,7 @@ public class HomeView extends BorderPane {
 		        viewSellerItems();
 		        itemTV.refresh();
 		        errorLabel.setText("Item deleted successfully");
+		        reinitializeSelectedItemTF();
 		    } else {
 		        errorLabel.setText("Item failed to be deleted");
 		    }
@@ -525,32 +537,38 @@ public class HomeView extends BorderPane {
 		    // Add code to add item to wishlist here
 			viewWishlist();
 	        itemTV.refresh();
+	        reinitializeSelectedItemTF();
 		});
 
 		removeFromWishlistButton.setOnAction(e -> {
 		    // Add code to remove item from wishlist here
 			viewWishlist();
 	        itemTV.refresh();
+	        reinitializeSelectedItemTF();
 		});
 
 		acceptOfferButton.setOnAction(e -> {
 		    // Add code for accepting an offer here
 			viewOfferItem();
 			itemTV.refresh();
+			reinitializeSelectedItemTF();
 		});
 
 		declineOfferButton.setOnAction(e -> {
 		    // Add code for declining an offer here
 			viewOfferItem();
 			itemTV.refresh();
+			reinitializeSelectedItemTF();
 		});
 
 		approveItemButton.setOnAction(e -> {
+			reinitializeSelectedItemTF();
 		    int res = ItemController.approveItem(tempItemId);
 		    if (res > 0) {
 		        viewRequestedItem();
 		        itemTV.refresh();
 		        errorLabel.setText("Item approved");
+		        reinitializeSelectedItemTF();
 		    } else {
 		        errorLabel.setText("Item failed to be approved");
 		    }
@@ -558,7 +576,13 @@ public class HomeView extends BorderPane {
 
 		declineItemButton.setOnAction(e -> {
 		    // Add code for declining item here
+			reinitializeSelectedItemTF();
 		});
+	}
+	
+	private void reinitializeSelectedItemTF() {
+		tempItemId = 0;
+		selectedItemTF.setText("");
 	}
 	
 	private void purchaseItem(int uid, int iid) {
